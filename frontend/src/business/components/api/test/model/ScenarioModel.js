@@ -12,6 +12,8 @@ import {
   HTTPSamplerProxy,
   JDBCDataSource,
   JDBCSampler,
+  RequestResponseWebSocketSampler,
+  WebSocketConnectionSampler,
   JSONPathAssertion,
   JSONPostProcessor,
   JSR223PostProcessor,
@@ -29,6 +31,8 @@ import {
 } from "./JMX";
 import Mock from "mockjs";
 import {funcFilters} from "@/common/js/func-filter";
+import {JDBCPostProcessor, JDBCPreProcessor, WebsocketCloseSampler} from "@/business/components/api/test/model/JMX";
+
 
 export const uuid = function () {
   let d = new Date().getTime()
@@ -286,6 +290,7 @@ export class RequestFactory {
     HTTP: "HTTP",
     DUBBO: "DUBBO",
     SQL: "SQL",
+    WEBSOCKET:"WEBSOCKET"
   }
 
   constructor(options = {}) {
@@ -295,6 +300,9 @@ export class RequestFactory {
         return new DubboRequest(options);
       case RequestFactory.TYPES.SQL:
         return new SqlRequest(options);
+      case  RequestFactory.TYPES.WEBSOCKET:
+        return new WebsocketRequest(options);
+
       default:
         return new HttpRequest(options);
     }
@@ -474,6 +482,98 @@ export class DubboRequest extends Request {
     return new DubboRequest(this);
   }
 }
+export class WebsocketRequest extends Request{
+  static PROTOCOLS = {
+    WSS: "wss://",
+    WS: "ws://"
+  }
+  constructor(options={}) {
+    super(RequestFactory.TYPES.WEBSOCKET);
+    this.mode=options.mode;
+    this.id = options.id || uuid();
+    this.name=options.name;
+    this.enable = options.enable === undefined ? true : options.enable;
+    this.useEnvironment = false;
+    console.log(this.mode);
+    if(this.mode===0){
+      this.setClose(options);
+    }else if(this.mode===2){
+      this.setRequest(options);
+    }else{
+      this.setConnection(options);
+    }
+    this.assertions = new Assertions(options.assertions);
+    this.extract = new Extract(options.extract);
+    this.jsr223PreProcessor = new JSR223Processor(options.jsr223PreProcessor);
+    this.jsr223PostProcessor = new JSR223Processor(options.jsr223PostProcessor);
+    this.jdbcPostProcessor=new JdbcProcessor(options.jdbcPostProcessor);
+    this.jdbcPreProcessor=new JdbcProcessor(options.jdbcPreProcessor);
+    // this.set(options);
+    // this.sets({ headers: KeyValue}, options);
+    this.sets({args: KeyValue, attachmentArgs: KeyValue}, options);
+
+  }
+  setConnection(options={}){
+    this.protocol = options.protocol || WebsocketRequest.PROTOCOLS.WSS;
+    this.TLS=(this.protocol=== WebsocketRequest.PROTOCOLS.WSS?true:false);
+    this.server=options.server||"ta_test.thinkingdata.cn";
+    this.port=(this.protocol=== WebsocketRequest.PROTOCOLS.WSS?443:80);
+    // this.url = "wss://ta_test.thinkingdata.cn/websocket/query";
+    this.path = "/websocket/query";
+    this.connectTimeout=options.connectTimeout || 20000;
+
+  }
+  setClose(options={}){
+    this.statusCode=options.statusCode||1000;
+    this.readTimeout=options.readTimeout || 6000;
+  }
+  setRequest(options={}){
+    this.createNewConnection=options.createNewConnection;
+    // this.headers = [];
+    this.protocol = options.protocol || WebsocketRequest.PROTOCOLS.WSS;
+    this.TLS=(this.protocol=== WebsocketRequest.PROTOCOLS.WSS?true:false);
+    this.server=options.server||"ta_test.thinkingdata.cn";
+    this.port=(this.protocol=== WebsocketRequest.PROTOCOLS.WSS?443:80);
+    // this.url = "wss://ta_test.thinkingdata.cn/websocket/query";
+    this.path = "/websocket/query";
+    this.connectTimeout=options.connectTimeout || 20000;
+    this.binaryPayload=false;
+    this.requestData=options.requestData;
+    this.readTimeout=options.readTimeout || 6000;
+    this.loadDataFromFile=false;
+    this.dataFile=undefined;
+    // this.environment = undefined;
+
+
+  }
+  // initOptions(options) {
+  //   this.createNewConnection=true;
+  //   this.TLS=true;
+  //   this.connectTimeout=20000;
+  //   this.readTimeout=6000;
+  //   this.loadDataFromFile=false;
+  //   this.binaryPayload=false;
+  //   this.useEnvironment = false;
+  //   // options.assertions = new Assertions(options.assertions);
+  //   return options;
+  // }
+  isValid() {
+    return {
+      isValid: true
+    }
+  }
+  showType() {
+    return this.type;
+  }
+
+  showProtocol() {
+    return this.protocol.toUpperCase();
+  }
+  clone() {
+    return new WebsocketRequest(this);
+  }
+}
+
 
 export class SqlRequest extends Request {
 
@@ -736,6 +836,18 @@ export class JSR223Processor extends BaseConfig {
   }
 }
 
+export class JdbcProcessor extends BaseConfig {
+  constructor(options) {
+    super();
+    this.dataSource=undefined;
+    this.resultVariable=undefined;
+    this.variableNames=undefined;
+    this.queryTimeout=20000;
+    this.query = undefined;
+    this.set(options);
+  }
+}
+
 export class Text extends AssertionType {
   constructor(options) {
     super(ASSERTION_TYPE.TEXT);
@@ -981,6 +1093,24 @@ class JMXHttpRequest {
   }
 }
 
+class JMXWebsocketRequest{
+  constructor(request,environment) {
+    // this.enable=request.enable;
+    this.createNewConnection=request.createNewConnection;
+    this.TLS=request.TLS;
+    this.server=request.server;
+    this.port=request.port;
+    this.path = request.path;
+    this.connectTimeout=request.connectTimeout;
+    this.binaryPayload=request.binaryPayload;
+    this.requestData=request.requestData;
+    this.readTimeout=request.readTimeout;
+    this.loadDataFromFile=request.loadDataFromFile;
+    this.dataFile=request.dataFile;
+    this.assertions=request.assertions;
+    this.extract=request.extract;
+  }
+}
 class JMXDubboRequest {
   constructor(request, dubboConfig) {
     // Request 复制
@@ -1034,7 +1164,8 @@ class JMXGenerator {
 
     let testPlan = new TestPlan(test.name);
     this.addScenarios(testPlan, test.id, test.scenarioDefinition);
-
+    console.log("aassss-----");
+    console.log(test.scenarioDefinition);
     this.jmeterTestPlan = new JMeterTestPlan();
     this.jmeterTestPlan.put(testPlan);
   }
@@ -1058,10 +1189,11 @@ class JMXGenerator {
         this.addJDBCDataSources(threadGroup, scenario);
 
         scenario.requests.forEach(request => {
+
           if (request.enable) {
             if (!request.isValid()) return;
             let sampler;
-
+            console.log(request);
             if (request instanceof DubboRequest) {
               sampler = new DubboSample(request.name || "", new JMXDubboRequest(request, scenario.dubboConfig));
             } else if (request instanceof HttpRequest) {
@@ -1072,14 +1204,27 @@ class JMXGenerator {
             } else if (request instanceof SqlRequest) {
               request.dataSource = scenario.databaseConfigMap.get(request.dataSource);
               sampler = new JDBCSampler(request.name || "", request);
+            }else if(request instanceof WebsocketRequest){
+              console.log("ssssss---");
+              // sampler=new RequestResponseWebSocketSampler(request.name||"",new JMXWebsocketRequest(request, scenario.environment));
+              if (request.mode===2){
+                sampler=new RequestResponseWebSocketSampler(request.name||"",request);
+              }else if(request.mode===1){
+                sampler=new WebSocketConnectionSampler(request.name||"",request);
+              }else{
+                sampler=new WebsocketCloseSampler(request.name||"",request)
+              }
+              console.log(sampler);
             }
 
             this.addRequestExtractor(sampler, request);
 
+            // this.addBeanShellProcessor(sampler, request);
+
             this.addRequestAssertion(sampler, request);
 
             this.addJSR223PreProcessor(sampler, request);
-
+            this.addJdbcProcessor(sampler, request);
             this.addConstantsTimer(sampler, request);
 
             if (request.controller && request.controller.isValid() && request.controller.enable) {
@@ -1207,7 +1352,15 @@ class JMXGenerator {
       sampler.put(new JSR223PostProcessor(name, request.jsr223PostProcessor));
     }
   }
-
+  addJdbcProcessor(sampler, request) {
+    let name = request.name;
+    if (request.jdbcPreProcessor && request.jdbcPreProcessor.query) {
+      sampler.put(new JDBCPreProcessor(name, request.jdbcPreProcessor));
+    }
+    if (request.jdbcPostProcessor && request.jdbcPostProcessor.query) {
+      sampler.put(new JDBCPostProcessor(name, request.jdbcPostProcessor));
+    }
+  }
   addConstantsTimer(sampler, request) {
     if (request.timer && request.timer.isValid() && request.timer.enable) {
       sampler.put(new JMXConstantTimer(request.timer.label(), request.timer));

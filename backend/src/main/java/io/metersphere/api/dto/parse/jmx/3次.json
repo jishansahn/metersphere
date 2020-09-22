@@ -1,0 +1,827 @@
+
+{
+  "jmeterTestPlan": {
+    "@version": "1.2",
+    "@properties": "5.0",
+    "@jmeter": "5.2.1",
+    "hashTree": {
+      "TestPlan": {
+        "@guiclass": "TestPlanGui",
+        "@testclass": "TestPlan",
+        "@testname": "3\u6b21",
+        "@enabled": "true",
+        "boolProp": [
+          {
+            "@name": "TestPlan.functional_mode",
+            "#text": "false"
+          },
+          {
+            "@name": "TestPlan.serialize_threadgroups",
+            "#text": "true"
+          },
+          {
+            "@name": "TestPlan.tearDown_on_shutdown",
+            "#text": "true"
+          }
+        ],
+        "stringProp": [
+          {
+            "@name": "TestPlan.comments"
+          },
+          {
+            "@name": "TestPlan.user_define_classpath"
+          }
+        ],
+        "elementProp": {
+          "@name": "TestPlan.user_defined_variables",
+          "@elementType": "Arguments",
+          "@guiclass": "ArgumentsPanel",
+          "@testclass": "Arguments",
+          "@testname": "User Defined Variables",
+          "@enabled": "true",
+          "collectionProp": {
+            "@name": "Arguments.arguments"
+          }
+        }
+      },
+      "hashTree": {
+        "ThreadGroup": {
+          "@guiclass": "ThreadGroupGui",
+          "@testclass": "ThreadGroup",
+          "@testname": "\u767b\u5f55",
+          "@enabled": "true",
+          "intProp": [
+            {
+              "@name": "ThreadGroup.num_threads",
+              "#text": "1"
+            },
+            {
+              "@name": "ThreadGroup.ramp_time",
+              "#text": "1"
+            }
+          ],
+          "longProp": [
+            {
+              "@name": "ThreadGroup.delay",
+              "#text": "0"
+            },
+            {
+              "@name": "ThreadGroup.duration",
+              "#text": "0"
+            }
+          ],
+          "stringProp": {
+            "@name": "ThreadGroup.on_sample_error",
+            "#text": "continue"
+          },
+          "boolProp": {
+            "@name": "ThreadGroup.scheduler",
+            "#text": "false"
+          },
+          "elementProp": {
+            "@name": "ThreadGroup.main_controller",
+            "@elementType": "LoopController",
+            "@guiclass": "LoopControlPanel",
+            "@testclass": "LoopController",
+            "@testname": "Loop Controller",
+            "@enabled": "true",
+            "boolProp": {
+              "@name": "LoopController.continue_forever",
+              "#text": "false"
+            },
+            "stringProp": {
+              "@name": "LoopController.loops",
+              "#text": "1"
+            }
+          }
+        },
+        "hashTree": {
+          "Arguments": {
+            "@guiclass": "ArgumentsPanel",
+            "@testclass": "Arguments",
+            "@testname": "\u767b\u5f55 Variables",
+            "@enabled": "true",
+            "collectionProp": {
+              "@name": "Arguments.arguments",
+              "elementProp": [
+                {
+                  "@name": "login_name",
+                  "@elementType": "Argument",
+                  "stringProp": [
+                    {
+                      "@name": "Argument.name",
+                      "#text": "login_name"
+                    },
+                    {
+                      "@name": "Argument.value",
+                      "#text": "jishanshan"
+                    },
+                    {
+                      "@name": "Argument.desc"
+                    },
+                    {
+                      "@name": "Argument.metadata",
+                      "#text": "="
+                    }
+                  ]
+                },
+                {
+                  "@name": "password",
+                  "@elementType": "Argument",
+                  "stringProp": [
+                    {
+                      "@name": "Argument.name",
+                      "#text": "password"
+                    },
+                    {
+                      "@name": "Argument.value",
+                      "#text": "jishanshan"
+                    },
+                    {
+                      "@name": "Argument.desc"
+                    },
+                    {
+                      "@name": "Argument.metadata",
+                      "#text": "="
+                    }
+                  ]
+                },
+                {
+                  "@name": "projectId",
+                  "@elementType": "Argument",
+                  "stringProp": [
+                    {
+                      "@name": "Argument.name",
+                      "#text": "projectId"
+                    },
+                    {
+                      "@name": "Argument.value",
+                      "#text": "23"
+                    },
+                    {
+                      "@name": "Argument.desc"
+                    },
+                    {
+                      "@name": "Argument.metadata",
+                      "#text": "="
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "hashTree": [
+            null,
+            null,
+            null,
+            null,
+            {
+              "HeaderManager": {
+                "@guiclass": "HeaderPanel",
+                "@testclass": "HeaderManager",
+                "@testname": "\u767b\u5f55 Headers",
+                "@enabled": "true",
+                "collectionProp": {
+                  "@name": "HeaderManager.headers",
+                  "elementProp": {
+                    "@name": "",
+                    "@elementType": "Header",
+                    "stringProp": [
+                      {
+                        "@name": "Header.name",
+                        "#text": "Content-Type"
+                      },
+                      {
+                        "@name": "Header.value",
+                        "#text": "application/x-www-form-urlencoded"
+                      }
+                    ]
+                  }
+                }
+              },
+              "hashTree": [
+                null,
+                null
+              ],
+              "ResponseAssertion": {
+                "@guiclass": "AssertionGui",
+                "@testclass": "ResponseAssertion",
+                "@testname": "Response Data contains: \"return_message\":\"success\"",
+                "@enabled": "true",
+                "stringProp": [
+                  {
+                    "@name": "Assertion.test_field",
+                    "#text": "Assertion.response_data"
+                  },
+                  {
+                    "@name": "Assertion.custom_message"
+                  }
+                ],
+                "boolProp": {
+                  "@name": "Assertion.assume_success",
+                  "#text": "false"
+                },
+                "intProp": {
+                  "@name": "Assertion.test_type",
+                  "#text": "2"
+                },
+                "collectionProp": {
+                  "@name": "Asserion.test_strings",
+                  "stringProp": {
+                    "@name": "7639",
+                    "#text": ".*\"return_message\":\"success\".*"
+                  }
+                }
+              }
+            },
+            {
+              "JSONPathAssertion": {
+                "@guiclass": "JSONPathAssertionGui",
+                "@testclass": "JSONPathAssertion",
+                "@testname": "$.return_message expect: success",
+                "@enabled": "true",
+                "stringProp": [
+                  {
+                    "@name": "JSON_PATH",
+                    "#text": "$.return_message"
+                  },
+                  {
+                    "@name": "EXPECTED_VALUE",
+                    "#text": "success"
+                  }
+                ],
+                "boolProp": [
+                  {
+                    "@name": "JSONVALIDATION",
+                    "#text": "true"
+                  },
+                  {
+                    "@name": "EXPECT_NULL",
+                    "#text": "false"
+                  },
+                  {
+                    "@name": "INVERT",
+                    "#text": "false"
+                  },
+                  {
+                    "@name": "ISREGEX",
+                    "#text": "true"
+                  }
+                ]
+              },
+              "hashTree": null
+            },
+            null,
+            null,
+            null
+          ],
+          "CookieManager": {
+            "@guiclass": "CookiePanel",
+            "@testclass": "CookieManager",
+            "@testname": "\u767b\u5f55",
+            "@enabled": "true",
+            "collectionProp": {
+              "@name": "CookieManager.cookies"
+            },
+            "boolProp": [
+              {
+                "@name": "CookieManager.clearEachIteration",
+                "#text": "false"
+              },
+              {
+                "@name": "CookieManager.controlledByThreadGroup",
+                "#text": "false"
+              }
+            ]
+          },
+          "JDBCDataSource": [
+            {
+              "@guiclass": "TestBeanGUI",
+              "@testclass": "JDBCDataSource",
+              "@testname": "mysqlJDBCDataSource",
+              "@enabled": "true",
+              "boolProp": [
+                {
+                  "@name": "autocommit",
+                  "#text": "true"
+                },
+                {
+                  "@name": "keepAlive",
+                  "#text": "true"
+                },
+                {
+                  "@name": "preinit",
+                  "#text": "false"
+                }
+              ],
+              "stringProp": [
+                {
+                  "@name": "dataSource",
+                  "#text": "mysql"
+                },
+                {
+                  "@name": "dbUrl",
+                  "#text": "jdbc:mysql:replication://address=(protocol=tcp)(type=master)(host=ta3)(port=6446),address=(protocol=tcp)(type=master)(host=ta1)(port=6446),address=(protocol=tcp)(type=master)(host=ta2)(port=6446)/ta?autoReconnect=true&useUnicode=true&useSSL=false&socketTimeout=60000&retriesAllDown=3&connectTimeout=10000"
+                },
+                {
+                  "@name": "driver",
+                  "#text": "com.mysql.jdbc.Driver"
+                },
+                {
+                  "@name": "username",
+                  "#text": "ta"
+                },
+                {
+                  "@name": "password",
+                  "#text": "ADe47iLoFtR4eERE"
+                },
+                {
+                  "@name": "poolMax",
+                  "#text": "10"
+                },
+                {
+                  "@name": "timeout",
+                  "#text": "10000"
+                },
+                {
+                  "@name": "connectionAge",
+                  "#text": "5000"
+                },
+                {
+                  "@name": "trimInterval",
+                  "#text": "60000"
+                },
+                {
+                  "@name": "transactionIsolation",
+                  "#text": "DEFAULT"
+                },
+                {
+                  "@name": "checkQuery"
+                },
+                {
+                  "@name": "initQuery"
+                },
+                {
+                  "@name": "connectionProperties"
+                }
+              ]
+            },
+            {
+              "@guiclass": "TestBeanGUI",
+              "@testclass": "JDBCDataSource",
+              "@testname": "mysql_localhostJDBCDataSource",
+              "@enabled": "true",
+              "boolProp": [
+                {
+                  "@name": "autocommit",
+                  "#text": "true"
+                },
+                {
+                  "@name": "keepAlive",
+                  "#text": "true"
+                },
+                {
+                  "@name": "preinit",
+                  "#text": "false"
+                }
+              ],
+              "stringProp": [
+                {
+                  "@name": "dataSource",
+                  "#text": "mysql_localhost"
+                },
+                {
+                  "@name": "dbUrl",
+                  "#text": "jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&serverTimezone=UTC"
+                },
+                {
+                  "@name": "driver",
+                  "#text": "com.mysql.jdbc.Driver"
+                },
+                {
+                  "@name": "username",
+                  "#text": "root"
+                },
+                {
+                  "@name": "password",
+                  "#text": "123456"
+                },
+                {
+                  "@name": "poolMax",
+                  "#text": "10"
+                },
+                {
+                  "@name": "timeout",
+                  "#text": "10000"
+                },
+                {
+                  "@name": "connectionAge",
+                  "#text": "5000"
+                },
+                {
+                  "@name": "trimInterval",
+                  "#text": "60000"
+                },
+                {
+                  "@name": "transactionIsolation",
+                  "#text": "DEFAULT"
+                },
+                {
+                  "@name": "checkQuery"
+                },
+                {
+                  "@name": "initQuery"
+                },
+                {
+                  "@name": "connectionProperties"
+                }
+              ]
+            }
+          ],
+          "HTTPSamplerProxy": [
+            {
+              "@guiclass": "HttpTestSampleGui",
+              "@testclass": "HTTPSamplerProxy",
+              "@testname": "\u767b\u5f55",
+              "@enabled": "true",
+              "stringProp": [
+                {
+                  "@name": "HTTPSampler.domain",
+                  "#text": "ta_test.thinkingdata.cn"
+                },
+                {
+                  "@name": "HTTPSampler.protocol",
+                  "#text": "https"
+                },
+                {
+                  "@name": "HTTPSampler.path",
+                  "#text": "//v1/login/auth?login_name=${login_name}&password=${password}"
+                },
+                {
+                  "@name": "HTTPSampler.method",
+                  "#text": "POST"
+                },
+                {
+                  "@name": "HTTPSampler.contentEncoding",
+                  "#text": "UTF-8"
+                },
+                {
+                  "@name": "HTTPSampler.port"
+                },
+                {
+                  "@name": "HTTPSampler.connect_timeout",
+                  "#text": "60000"
+                }
+              ],
+              "boolProp": [
+                {
+                  "@name": "HTTPSampler.use_keepalive",
+                  "#text": "true"
+                },
+                {
+                  "@name": "HTTPSampler.postBodyRaw",
+                  "#text": "true"
+                }
+              ],
+              "elementProp": [
+                {
+                  "@name": "HTTPsampler.Arguments",
+                  "@elementType": "Arguments",
+                  "@guiclass": "HTTPArgumentsPanel",
+                  "@testclass": "Arguments",
+                  "@enabled": "true",
+                  "collectionProp": {
+                    "@name": "Arguments.arguments",
+                    "elementProp": [
+                      {
+                        "@name": "login_name",
+                        "@elementType": "HTTPArgument",
+                        "boolProp": [
+                          {
+                            "@name": "HTTPArgument.always_encode",
+                            "#text": "true"
+                          },
+                          {
+                            "@name": "HTTPArgument.use_equals",
+                            "#text": "true"
+                          }
+                        ],
+                        "stringProp": [
+                          {
+                            "@name": "Argument.name",
+                            "#text": "login_name"
+                          },
+                          {
+                            "@name": "Argument.value",
+                            "#text": "${login_name}"
+                          },
+                          {
+                            "@name": "Argument.metadata",
+                            "#text": "="
+                          }
+                        ]
+                      },
+                      {
+                        "@name": "password",
+                        "@elementType": "HTTPArgument",
+                        "boolProp": [
+                          {
+                            "@name": "HTTPArgument.always_encode",
+                            "#text": "true"
+                          },
+                          {
+                            "@name": "HTTPArgument.use_equals",
+                            "#text": "true"
+                          }
+                        ],
+                        "stringProp": [
+                          {
+                            "@name": "Argument.name",
+                            "#text": "password"
+                          },
+                          {
+                            "@name": "Argument.value",
+                            "#text": "${password}"
+                          },
+                          {
+                            "@name": "Argument.metadata",
+                            "#text": "="
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "@name": "HTTPsampler.Arguments",
+                  "@elementType": "Arguments",
+                  "@guiclass": "HTTPArgumentsPanel",
+                  "@testclass": "Arguments",
+                  "@enabled": "true",
+                  "collectionProp": {
+                    "@name": "Arguments.arguments",
+                    "elementProp": {
+                      "@name": "",
+                      "@elementType": "HTTPArgument",
+                      "boolProp": [
+                        {
+                          "@name": "HTTPArgument.always_encode",
+                          "#text": "false"
+                        },
+                        {
+                          "@name": "HTTPArgument.use_equals",
+                          "#text": "true"
+                        }
+                      ],
+                      "stringProp": [
+                        {
+                          "@name": "Argument.value"
+                        },
+                        {
+                          "@name": "Argument.metadata",
+                          "#text": "="
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "@guiclass": "HttpTestSampleGui",
+              "@testclass": "HTTPSamplerProxy",
+              "@testname": "\u4e8b\u4ef6list",
+              "@enabled": "true",
+              "stringProp": [
+                {
+                  "@name": "HTTPSampler.domain",
+                  "#text": "ta_test.thinkingdata.cn"
+                },
+                {
+                  "@name": "HTTPSampler.protocol",
+                  "#text": "https"
+                },
+                {
+                  "@name": "HTTPSampler.path",
+                  "#text": "//v1/ta/event/catalog/listEvent"
+                },
+                {
+                  "@name": "HTTPSampler.method",
+                  "#text": "GET"
+                },
+                {
+                  "@name": "HTTPSampler.contentEncoding",
+                  "#text": "UTF-8"
+                },
+                {
+                  "@name": "HTTPSampler.port"
+                },
+                {
+                  "@name": "HTTPSampler.connect_timeout",
+                  "#text": "60000"
+                }
+              ],
+              "boolProp": {
+                "@name": "HTTPSampler.use_keepalive",
+                "#text": "true"
+              },
+              "elementProp": [
+                {
+                  "@name": "HTTPsampler.Arguments",
+                  "@elementType": "Arguments",
+                  "@guiclass": "HTTPArgumentsPanel",
+                  "@testclass": "Arguments",
+                  "@enabled": "true",
+                  "collectionProp": {
+                    "@name": "Arguments.arguments",
+                    "elementProp": {
+                      "@name": "projectId",
+                      "@elementType": "HTTPArgument",
+                      "boolProp": [
+                        {
+                          "@name": "HTTPArgument.always_encode",
+                          "#text": "true"
+                        },
+                        {
+                          "@name": "HTTPArgument.use_equals",
+                          "#text": "true"
+                        }
+                      ],
+                      "stringProp": [
+                        {
+                          "@name": "Argument.name",
+                          "#text": "projectId"
+                        },
+                        {
+                          "@name": "Argument.value",
+                          "#text": "${projectId}"
+                        },
+                        {
+                          "@name": "Argument.metadata",
+                          "#text": "="
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "@name": "HTTPsampler.Files",
+                  "@elementType": "HTTPFileArgs",
+                  "collectionProp": {
+                    "@name": "HTTPFileArgs.files"
+                  }
+                }
+              ]
+            }
+          ],
+          "eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler": {
+            "@guiclass": "eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui",
+            "@testclass": "eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler",
+            "@testname": "SSSSS",
+            "@enabled": "true",
+            "boolProp": [
+              {
+                "@name": "createNewConnection",
+                "#text": "true"
+              },
+              {
+                "@name": "TLS",
+                "#text": "true"
+              },
+              {
+                "@name": "binaryPayload",
+                "#text": "false"
+              },
+              {
+                "@name": "loadDataFromFile",
+                "#text": "false"
+              }
+            ],
+            "stringProp": [
+              {
+                "@name": "server",
+                "#text": "ta_test.thinkingdata.cn"
+              },
+              {
+                "@name": "port",
+                "#text": "443"
+              },
+              {
+                "@name": "path",
+                "#text": "/websocket/query"
+              },
+              {
+                "@name": "connectTimeout",
+                "#text": "20000"
+              },
+              {
+                "@name": "requestData",
+                "#text": "[\"data\",{\"requestId\":\"WS_SCATTER@@rTRWNcXT\",\"projectId\":319,\"eventModel\":7,\"qp\":{\"events\":[{\"analysis\":\"\",\"analysisDesc\":\"\",\"customEvent\":\"EnterActivities.iswin.A110+EnterActivities.iswin.A112\",\"customFilters\":[],\"formulation\":{\"formulationDeps\":[{\"event\":{\"eventDesc\":\"\u53c2\u4e0e\u6d3b\u52a8\",\"eventName\":\"EnterActivities\",\"eventType\":\"event\"},\"property\":{\"columnName\":\"iswin\",\"columnDesc\":\"\u662f\u5426\u80dc\u5229\",\"tableType\":\"0\"},\"quota\":{\"quotaName\":\"A110\",\"quotaDesc\":\"\u4e3a\u5047\u6570\"}},{\"event\":{\"eventDesc\":\"\u53c2\u4e0e\u6d3b\u52a8\",\"eventName\":\"EnterActivities\",\"eventType\":\"event\"},\"property\":{\"columnName\":\"iswin\",\"columnDesc\":\"\u662f\u5426\u80dc\u5229\",\"tableType\":\"0\"},\"quota\":{\"quotaName\":\"A112\",\"quotaDesc\":\"\u4e3a\u7a7a\u6570\"}}]},\"eventId\":\"\",\"eventName\":\"test\",\"eventDesc\":\"undefined.EnterActivities.\u53c2\u4e0e\u6d3b\u52a8.iswin.\u662f\u5426\u80dc\u5229.A110.\u4e3a\u5047\u6570,undefined.EnterActivities.\u53c2\u4e0e\u6d3b\u52a8.iswin.\u662f\u5426\u80dc\u5229.A112.\u4e3a\u7a7a\u6570\",\"eventType\":\"event,event\",\"eventNameDisplay\":\"\",\"filts\":[],\"quota\":\"\",\"quotaIntervalArr\":\"\",\"intervalType\":\"def\",\"relation\":1,\"type\":1}],\"eventView\":{\"projectId\":319,\"startTime\":\"2020-08-01 00:00:00\",\"timeParticleSize\":\"T1\",\"endTime\":\"2020-08-31 23:59:59\",\"graphShape\":\"L4\",\"recentDay\":\"\",\"groupBy\":[],\"comparedStartTime\":\"\",\"comparedEndTime\":\"\",\"comparedRecentDay\":\"\",\"comparedByTime\":false,\"startToNow\":-1,\"comparedType\":\"\",\"compareStartToNow\":-1,\"uiCommonConfig\":{\"startToNow\":-1,\"compareStartToNow\":-1}}},\"useCache\":false,\"querySource\":\"module\"}]"
+              },
+              {
+                "@name": "readTimeout",
+                "#text": "6000"
+              },
+              {
+                "@name": "dataFile"
+              }
+            ]
+          },
+          "JDBCSampler": [
+            {
+              "@guiclass": "TestBeanGUI",
+              "@testclass": "JDBCSampler",
+              "@testname": "ss",
+              "@enabled": "true",
+              "stringProp": [
+                {
+                  "@name": "dataSource",
+                  "#text": "mysql"
+                },
+                {
+                  "@name": "query",
+                  "#text": "SELECT open_id from ta.auth_user where login_name='jishanshan'"
+                },
+                {
+                  "@name": "queryTimeout",
+                  "#text": "60000"
+                },
+                {
+                  "@name": "resultVariable",
+                  "#text": "open_id2"
+                },
+                {
+                  "@name": "variableNames",
+                  "#text": "open_id"
+                },
+                {
+                  "@name": "queryArguments"
+                },
+                {
+                  "@name": "queryArgumentsTypes"
+                },
+                {
+                  "@name": "resultSetMaxRows"
+                },
+                {
+                  "@name": "resultSetHandler",
+                  "#text": "Store as String"
+                },
+                {
+                  "@name": "queryType",
+                  "#text": "Callable Statement"
+                }
+              ]
+            },
+            {
+              "@guiclass": "TestBeanGUI",
+              "@testclass": "JDBCSampler",
+              "@testname": "sss",
+              "@enabled": "true",
+              "stringProp": [
+                {
+                  "@name": "dataSource",
+                  "#text": "mysql_localhost"
+                },
+                {
+                  "@name": "query",
+                  "#text": "select name from api_test.api_test_project"
+                },
+                {
+                  "@name": "queryTimeout",
+                  "#text": "60000"
+                },
+                {
+                  "@name": "resultVariable",
+                  "#text": "name2"
+                },
+                {
+                  "@name": "variableNames",
+                  "#text": "name"
+                },
+                {
+                  "@name": "queryArguments"
+                },
+                {
+                  "@name": "queryArgumentsTypes"
+                },
+                {
+                  "@name": "resultSetMaxRows"
+                },
+                {
+                  "@name": "resultSetHandler",
+                  "#text": "Store as String"
+                },
+                {
+                  "@name": "queryType",
+                  "#text": "Callable Statement"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+

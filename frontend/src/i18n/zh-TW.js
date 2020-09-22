@@ -554,8 +554,9 @@ export default {
         name_cannot_be_empty: "SQL請求名稱不能為空",
         dataSource_cannot_be_empty: "SQL請求數據源不能為空",
         result_variable: "存儲結果",
-        variable_names: "按列存儲",
+        variable_names: "按列存儲"
       }
+
     },
     api_import: {
       label: "導入",

@@ -434,6 +434,7 @@ export default {
       base_url_description: "基础URL作为所有请求的URL前缀",
       variables: "自定义变量",
       headers: "请求头",
+      jdbc_config:"jdbc配置",
       kv_description: "所有请求可以使用自定义变量",
       copy: "复制场景",
       delete: "删除场景",
@@ -522,6 +523,8 @@ export default {
       processor: {
         pre_exec_script: "预执行脚本",
         post_exec_script: "后执行脚本",
+        pre_jdbc_script:"前置JDBC处理",
+        post_jdbc_script:"后置JDBC处理",
         code_template: "代码模版",
         bean_shell_processor_tip: "仅支持 BeanShell 脚本",
         code_template_get_variable: "获取变量",
@@ -540,6 +543,16 @@ export default {
         get_provider_success: "获取成功",
         check_registry_center: "获取失败，请检查Registry Center",
         form_description: "如果当前配置项无值，则取场景配置项的值",
+      },
+      websocket:{
+        url_description: "例如：wss://fit2cloud.com",
+        protocol: "协议",
+        domain:'域名',
+        domain_description: "ta_test.thinkingdata.cn",
+        connection_timeout:"连接超时",
+        read_timeout:"读超时",
+        mode:"请求模式",
+        statusCode:"状态码"
       },
       sql: {
         dataSource: "数据源名称",

@@ -1,3 +1,6 @@
+import {WebsocketRequest} from "@/business/components/api/test/model/ScenarioModel";
+import JdbcProcessor from "@/business/components/api/test/components/processor/JdbcProcessor";
+
 const INDENT = '  '; // 缩进2空格
 
 export class Element {
@@ -320,6 +323,49 @@ export class HTTPSamplerProxy extends DefaultTestElement {
   }
 }
 
+export class WebsocketCloseSampler extends DefaultTestElement{
+  constructor(testName,options={}) {
+    super("eu.luminis.jmeter.wssampler.CloseWebSocketSampler",
+      "eu.luminis.jmeter.wssampler.CloseWebSocketSamplerGui",
+      "eu.luminis.jmeter.wssampler.CloseWebSocketSampler",
+      testName);
+    this.stringProp("statusCode",options.statusCode);
+    this.stringProp("readTimeout",options.readTimeout);
+  }
+}
+export class RequestResponseWebSocketSampler extends DefaultTestElement{
+  constructor(testName,options={}) {
+    super("eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler",
+      "eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui",
+      "eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler",
+      testName);
+    this.boolProp("createNewConnection",options.createNewConnection);
+    this.boolProp("TLS",options.TLS);
+    this.stringProp("server",options.server);
+    this.stringProp("port",options.port);
+    this.stringProp('path',options.path);
+    this.stringProp("connectTimeout",options.connectTimeout);
+    this.boolProp("binaryPayload",options.binaryPayload);
+    this.stringProp("requestData",options.requestData);
+    this.stringProp("readTimeout",options.readTimeout);
+    this.boolProp("loadDataFromFile",options.loadDataFromFile);
+    this.stringProp("dataFile",options.dataFile)
+  }
+}
+export class WebSocketConnectionSampler extends DefaultTestElement{
+  constructor(testName,options={}) {
+    super("eu.luminis.jmeter.wssampler.OpenWebSocketSampler",
+      "eu.luminis.jmeter.wssampler.OpenWebSocketSamplerGui",
+      "eu.luminis.jmeter.wssampler.OpenWebSocketSampler",
+      testName);
+    this.boolProp("TLS",options.TLS);
+    this.stringProp("server",options.server);
+    this.stringProp("port",options.port);
+    this.stringProp('path',options.path);
+    this.stringProp("connectTimeout",options.connectTimeout);
+  }
+
+}
 // 这是一个Element
 export class HTTPSamplerArguments extends Element {
   constructor(args) {
@@ -485,7 +531,32 @@ export class JSR223PostProcessor extends JSR223Processor {
     super('JSR223PostProcessor', 'TestBeanGUI', 'JSR223PostProcessor', testName, processor)
   }
 }
-
+export class JDBCProcessor extends DefaultTestElement {
+  constructor(tag, guiclass, testclass, testname, processor) {
+    super(tag, guiclass, testclass, testname);
+    this.processor = processor || {};
+    this.stringProp('dataSource', this.processor.dataSource);
+    this.stringProp('query',this.processor.query);
+    this.stringProp('variableNames', this.processor.variableNames);
+    this.stringProp('queryTimeout', this.processor.queryTimeout);
+    this.stringProp('resultVariable', this.processor.resultVariable);
+    this.stringProp("queryArguments");
+    this.stringProp("queryArgumentsTypes");
+    this.stringProp("resultSetMaxRows");
+    this.stringProp("resultSetHandler", 'Store as String');
+    this.stringProp("queryType", 'Callable Statement');
+  }
+}
+export class JDBCPreProcessor extends JDBCProcessor {
+  constructor(testName, processor) {
+    super('JDBCPreProcessor', 'TestBeanGUI', 'JDBCPreProcessor', testName, processor)
+  }
+}
+export class JDBCPostProcessor extends JDBCProcessor {
+  constructor(testName, processor) {
+    super('JDBCPostProcessor', 'TestBeanGUI', 'JDBCPostProcessor', testName, processor)
+  }
+}
 export class BeanShellPreProcessor extends BeanShellProcessor {
   constructor(testName, processor) {
     super('BeanShellPreProcessor', 'TestBeanGUI', 'BeanShellPreProcessor', testName, processor)

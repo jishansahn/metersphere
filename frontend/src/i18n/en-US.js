@@ -538,6 +538,10 @@ export default {
         input_registry_center: "Please enter the registry center",
         input_consumer_service: "Please enter the consumer & service",
         check_registry_center: "Can't get interface list, please check the registry center",
+      },
+      websocket:{
+        url_description: "eg：wss://fit2cloud.com",
+        protocol: "protocol",
       }
     },
     sql: {

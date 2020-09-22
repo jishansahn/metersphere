@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = HttpRequest.class, name = RequestType.HTTP),
+        @JsonSubTypes.Type(value=WebsocketRequest.class,name = RequestType.WEBSOCKET),
         @JsonSubTypes.Type(value = DubboRequest.class, name = RequestType.DUBBO),
         @JsonSubTypes.Type(value = SqlRequest.class, name = RequestType.SQL)
+
 })
-@JSONType(seeAlso = {HttpRequest.class, DubboRequest.class, SqlRequest.class}, typeKey = "type")
+@JSONType(seeAlso = {HttpRequest.class,WebsocketRequest.class, DubboRequest.class, SqlRequest.class}, typeKey = "type")
 public interface Request {
 }
