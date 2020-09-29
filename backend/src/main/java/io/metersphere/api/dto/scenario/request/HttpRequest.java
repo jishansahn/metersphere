@@ -7,10 +7,7 @@ import io.metersphere.api.dto.scenario.KeyValue;
 import io.metersphere.api.dto.scenario.assertions.Assertions;
 import io.metersphere.api.dto.scenario.controller.IfController;
 import io.metersphere.api.dto.scenario.extract.Extract;
-import io.metersphere.api.dto.scenario.processor.BeanShellPostProcessor;
-import io.metersphere.api.dto.scenario.processor.BeanShellPreProcessor;
-import io.metersphere.api.dto.scenario.processor.JSR223PostProcessor;
-import io.metersphere.api.dto.scenario.processor.JSR223PreProcessor;
+import io.metersphere.api.dto.scenario.processor.*;
 import io.metersphere.api.dto.scenario.timer.ConstantTimer;
 import lombok.Data;
 
@@ -63,4 +60,8 @@ public class HttpRequest implements Request {
     private IfController controller;
     @JSONField(ordinal = 20)
     private ConstantTimer timer;
+    @JSONField(ordinal = 21)
+    private JDBCPreProcessor jdbcPreProcessor;
+    @JSONField(ordinal = 22)
+    private JDBCPostProcessor jdbcPostProcessor;
 }

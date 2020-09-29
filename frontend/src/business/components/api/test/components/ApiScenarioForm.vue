@@ -37,9 +37,11 @@
                           :environment="scenario.environment"
                           :description="$t('api_test.scenario.kv_description')"/>
       </el-tab-pane>
+
       <el-tab-pane :label="$t('api_test.environment.database_config')" name="database">
         <ms-database-config :configs="scenario.databaseConfigs"/>
       </el-tab-pane>
+
       <el-tab-pane :label="$t('api_test.scenario.dubbo')" name="dubbo">
         <div class="dubbo-config-title">Config Center</div>
         <ms-dubbo-config-center :config="scenario.dubboConfig.configCenter" :is-read-only="isReadOnly"/>
@@ -67,6 +69,7 @@ import MsDubboConfigCenter from "@/business/components/api/test/components/reque
 import MsDubboConsumerService from "@/business/components/api/test/components/request/dubbo/ConsumerAndService";
 import MsDatabaseConfig from "./request/database/DatabaseConfig";
 import {parseEnvironment} from "../model/EnvironmentModel";
+
 
 export default {
   name: "MsApiScenarioForm",

@@ -120,6 +120,13 @@
               suffixes: new Set(['json'])
             },
             {
+              name: 'JMX',
+              value: 'JMX',
+              tip: this.$t('api_test.api_import.jmx_tip'),
+              exportTip: this.$t('api_test.api_import.jmx_export_tip'),
+              suffixes: new Set(['jmx'])
+            },
+            {
               name: 'Swagger',
               value: 'Swagger2',
               tip: this.$t('api_test.api_import.swagger_tip'),

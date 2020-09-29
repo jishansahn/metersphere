@@ -17,6 +17,8 @@ import '../common/css/menu-header.css';
 import '../common/css/main.css';
 import CKEditor from '@ckeditor/ckeditor5-vue';
 
+//开启debug模式
+Vue.config.debug = true;
 Vue.config.productionTip = false;
 Vue.use(icon);
 Vue.use(ElementUI, {

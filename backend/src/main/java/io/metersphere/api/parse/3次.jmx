@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2.1">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="3次" enabled="true">
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <stringProp name="TestPlan.comments"/>
+      <stringProp name="TestPlan.user_define_classpath"/>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="登录" enabled="true">
+        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.ramp_time">1</intProp>
+        <longProp name="ThreadGroup.delay">0</longProp>
+        <longProp name="ThreadGroup.duration">0</longProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="登录 Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="login_name" elementType="Argument">
+              <stringProp name="Argument.name">login_name</stringProp>
+              <stringProp name="Argument.value">jishanshan</stringProp>
+              <stringProp name="Argument.desc"/>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="password" elementType="Argument">
+              <stringProp name="Argument.name">password</stringProp>
+              <stringProp name="Argument.value">jishanshan</stringProp>
+              <stringProp name="Argument.desc"/>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="projectId" elementType="Argument">
+              <stringProp name="Argument.name">projectId</stringProp>
+              <stringProp name="Argument.value">23</stringProp>
+              <stringProp name="Argument.desc"/>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </Arguments>
+        <hashTree/>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="登录" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+          <boolProp name="CookieManager.controlledByThreadGroup">false</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="mysqlJDBCDataSource" enabled="true">
+          <boolProp name="autocommit">true</boolProp>
+          <boolProp name="keepAlive">true</boolProp>
+          <boolProp name="preinit">false</boolProp>
+          <stringProp name="dataSource">mysql</stringProp>
+          <stringProp name="dbUrl">jdbc:mysql:replication://address=(protocol=tcp)(type=master)(host=ta3)(port=6446),address=(protocol=tcp)(type=master)(host=ta1)(port=6446),address=(protocol=tcp)(type=master)(host=ta2)(port=6446)/ta?autoReconnect=true&amp;useUnicode=true&amp;useSSL=false&amp;socketTimeout=60000&amp;retriesAllDown=3&amp;connectTimeout=10000</stringProp>
+          <stringProp name="driver">com.mysql.jdbc.Driver</stringProp>
+          <stringProp name="username">ta</stringProp>
+          <stringProp name="password">ADe47iLoFtR4eERE</stringProp>
+          <stringProp name="poolMax">10</stringProp>
+          <stringProp name="timeout">10000</stringProp>
+          <stringProp name="connectionAge">5000</stringProp>
+          <stringProp name="trimInterval">60000</stringProp>
+          <stringProp name="transactionIsolation">DEFAULT</stringProp>
+          <stringProp name="checkQuery"/>
+          <stringProp name="initQuery"/>
+          <stringProp name="connectionProperties"/>
+        </JDBCDataSource>
+        <hashTree/>
+        <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="mysql_localhostJDBCDataSource" enabled="true">
+          <boolProp name="autocommit">true</boolProp>
+          <boolProp name="keepAlive">true</boolProp>
+          <boolProp name="preinit">false</boolProp>
+          <stringProp name="dataSource">mysql_localhost</stringProp>
+          <stringProp name="dbUrl">jdbc:mysql://localhost:3306?useUnicode=true&amp;characterEncoding=utf8&amp;allowMultiQueries=true&amp;serverTimezone=UTC</stringProp>
+          <stringProp name="driver">com.mysql.jdbc.Driver</stringProp>
+          <stringProp name="username">root</stringProp>
+          <stringProp name="password">123456</stringProp>
+          <stringProp name="poolMax">10</stringProp>
+          <stringProp name="timeout">10000</stringProp>
+          <stringProp name="connectionAge">5000</stringProp>
+          <stringProp name="trimInterval">60000</stringProp>
+          <stringProp name="transactionIsolation">DEFAULT</stringProp>
+          <stringProp name="checkQuery"/>
+          <stringProp name="initQuery"/>
+          <stringProp name="connectionProperties"/>
+        </JDBCDataSource>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="登录" enabled="true">
+          <stringProp name="HTTPSampler.domain">ta_test.thinkingdata.cn</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">//v1/login/auth?login_name=${login_name}&amp;password=${password}</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.port"/>
+          <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="login_name" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">login_name</stringProp>
+                <stringProp name="Argument.value">${login_name}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="password" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">password</stringProp>
+                <stringProp name="Argument.value">${password}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.value"/>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="登录 Headers" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Data contains: &quot;return_message&quot;:&quot;success&quot;" enabled="true">
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"/>
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="7639">.*&quot;return_message&quot;:&quot;success&quot;.*</stringProp>
+            </collectionProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="事件list" enabled="true">
+          <stringProp name="HTTPSampler.domain">ta_test.thinkingdata.cn</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">//v1/ta/event/catalog/listEvent</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.port"/>
+          <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="projectId" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">projectId</stringProp>
+                <stringProp name="Argument.value">${projectId}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+            <collectionProp name="HTTPFileArgs.files"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="$.return_message expect: success" enabled="true">
+            <stringProp name="JSON_PATH">$.return_message</stringProp>
+            <stringProp name="EXPECTED_VALUE">success</stringProp>
+            <boolProp name="JSONVALIDATION">true</boolProp>
+            <boolProp name="EXPECT_NULL">false</boolProp>
+            <boolProp name="INVERT">false</boolProp>
+            <boolProp name="ISREGEX">true</boolProp>
+          </JSONPathAssertion>
+          <hashTree/>
+        </hashTree>
+        <eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler" testname="SSSSS" enabled="true">
+          <boolProp name="createNewConnection">true</boolProp>
+          <boolProp name="TLS">true</boolProp>
+          <stringProp name="server">ta_test.thinkingdata.cn</stringProp>
+          <stringProp name="port">443</stringProp>
+          <stringProp name="path">/websocket/query</stringProp>
+          <stringProp name="connectTimeout">20000</stringProp>
+          <boolProp name="binaryPayload">false</boolProp>
+          <stringProp name="requestData">[&quot;data&quot;,{&quot;requestId&quot;:&quot;WS_SCATTER@@rTRWNcXT&quot;,&quot;projectId&quot;:319,&quot;eventModel&quot;:7,&quot;qp&quot;:{&quot;events&quot;:[{&quot;analysis&quot;:&quot;&quot;,&quot;analysisDesc&quot;:&quot;&quot;,&quot;customEvent&quot;:&quot;EnterActivities.iswin.A110+EnterActivities.iswin.A112&quot;,&quot;customFilters&quot;:[],&quot;formulation&quot;:{&quot;formulationDeps&quot;:[{&quot;event&quot;:{&quot;eventDesc&quot;:&quot;参与活动&quot;,&quot;eventName&quot;:&quot;EnterActivities&quot;,&quot;eventType&quot;:&quot;event&quot;},&quot;property&quot;:{&quot;columnName&quot;:&quot;iswin&quot;,&quot;columnDesc&quot;:&quot;是否胜利&quot;,&quot;tableType&quot;:&quot;0&quot;},&quot;quota&quot;:{&quot;quotaName&quot;:&quot;A110&quot;,&quot;quotaDesc&quot;:&quot;为假数&quot;}},{&quot;event&quot;:{&quot;eventDesc&quot;:&quot;参与活动&quot;,&quot;eventName&quot;:&quot;EnterActivities&quot;,&quot;eventType&quot;:&quot;event&quot;},&quot;property&quot;:{&quot;columnName&quot;:&quot;iswin&quot;,&quot;columnDesc&quot;:&quot;是否胜利&quot;,&quot;tableType&quot;:&quot;0&quot;},&quot;quota&quot;:{&quot;quotaName&quot;:&quot;A112&quot;,&quot;quotaDesc&quot;:&quot;为空数&quot;}}]},&quot;eventId&quot;:&quot;&quot;,&quot;eventName&quot;:&quot;test&quot;,&quot;eventDesc&quot;:&quot;undefined.EnterActivities.参与活动.iswin.是否胜利.A110.为假数,undefined.EnterActivities.参与活动.iswin.是否胜利.A112.为空数&quot;,&quot;eventType&quot;:&quot;event,event&quot;,&quot;eventNameDisplay&quot;:&quot;&quot;,&quot;filts&quot;:[],&quot;quota&quot;:&quot;&quot;,&quot;quotaIntervalArr&quot;:&quot;&quot;,&quot;intervalType&quot;:&quot;def&quot;,&quot;relation&quot;:1,&quot;type&quot;:1}],&quot;eventView&quot;:{&quot;projectId&quot;:319,&quot;startTime&quot;:&quot;2020-08-01 00:00:00&quot;,&quot;timeParticleSize&quot;:&quot;T1&quot;,&quot;endTime&quot;:&quot;2020-08-31 23:59:59&quot;,&quot;graphShape&quot;:&quot;L4&quot;,&quot;recentDay&quot;:&quot;&quot;,&quot;groupBy&quot;:[],&quot;comparedStartTime&quot;:&quot;&quot;,&quot;comparedEndTime&quot;:&quot;&quot;,&quot;comparedRecentDay&quot;:&quot;&quot;,&quot;comparedByTime&quot;:false,&quot;startToNow&quot;:-1,&quot;comparedType&quot;:&quot;&quot;,&quot;compareStartToNow&quot;:-1,&quot;uiCommonConfig&quot;:{&quot;startToNow&quot;:-1,&quot;compareStartToNow&quot;:-1}}},&quot;useCache&quot;:false,&quot;querySource&quot;:&quot;module&quot;}]</stringProp>
+          <stringProp name="readTimeout">6000</stringProp>
+          <boolProp name="loadDataFromFile">false</boolProp>
+          <stringProp name="dataFile"/>
+        </eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler>
+        <hashTree/>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="ss" enabled="true">
+          <stringProp name="dataSource">mysql</stringProp>
+          <stringProp name="query">SELECT open_id from ta.auth_user where login_name=&apos;jishanshan&apos;</stringProp>
+          <stringProp name="queryTimeout">60000</stringProp>
+          <stringProp name="resultVariable">open_id2</stringProp>
+          <stringProp name="variableNames">open_id</stringProp>
+          <stringProp name="queryArguments"/>
+          <stringProp name="queryArgumentsTypes"/>
+          <stringProp name="resultSetMaxRows"/>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="queryType">Callable Statement</stringProp>
+        </JDBCSampler>
+        <hashTree/>
+        <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="sss" enabled="true">
+          <stringProp name="dataSource">mysql_localhost</stringProp>
+          <stringProp name="query">select name from api_test.api_test_project</stringProp>
+          <stringProp name="queryTimeout">60000</stringProp>
+          <stringProp name="resultVariable">name2</stringProp>
+          <stringProp name="variableNames">name</stringProp>
+          <stringProp name="queryArguments"/>
+          <stringProp name="queryArgumentsTypes"/>
+          <stringProp name="resultSetMaxRows"/>
+          <stringProp name="resultSetHandler">Store as String</stringProp>
+          <stringProp name="queryType">Callable Statement</stringProp>
+        </JDBCSampler>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

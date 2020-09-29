@@ -1,5 +1,6 @@
 package io.metersphere.api.jmeter;
 
+import io.metersphere.api.controller.test;
 import io.metersphere.commons.constants.ApiRunMode;
 import io.metersphere.commons.exception.MSException;
 import io.metersphere.commons.utils.LogUtil;
@@ -19,7 +20,6 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-
 @Service
 public class JMeterService {
 
@@ -39,6 +39,7 @@ public class JMeterService {
         Options.importSite = false;
 
         try {
+            test a=new test("ss");
             Object scriptWrapper = SaveService.loadElement(is);
             HashTree testPlan = getHashTree(scriptWrapper);
             addBackendListener(testId, debugReportId, testPlan);

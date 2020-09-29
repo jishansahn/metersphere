@@ -161,6 +161,7 @@ export default {
           'Content-Type': undefined
         }
       };
+      console.log("param "+JSON.stringify(param));
       return Vue.prototype.$request(axiosRequestConfig, success, failure);
     }
 

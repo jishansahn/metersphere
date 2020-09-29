@@ -8,25 +8,28 @@
 </template>
 
 <script>
+
   import {JSR223Processor, Request, RequestFactory, Scenario} from "../../model/ScenarioModel";
   import MsApiHttpRequestForm from "./ApiHttpRequestForm";
   import MsApiDubboRequestForm from "./ApiDubboRequestForm";
   import MsScenarioResults from "../../../report/components/ScenarioResults";
   import MsRequestResultTail from "../../../report/components/RequestResultTail";
   import MsApiSqlRequestForm from "./ApiSqlRequestForm";
+  import MsApiWebsocketRequestForm from "./ApiWebsocketRequestForm";
 
-export default {
-  name: "MsApiRequestForm",
-  components: {MsApiSqlRequestForm, MsRequestResultTail, MsScenarioResults, MsApiDubboRequestForm, MsApiHttpRequestForm},
-  props: {
-    scenario: Scenario,
-    request: Request,
-    isReadOnly: {
-      type: Boolean,
-      default: false
+  export default {
+    name: "MsApiRequestForm",
+    components: {MsApiSqlRequestForm, MsRequestResultTail, MsScenarioResults, MsApiDubboRequestForm, MsApiHttpRequestForm,MsApiWebsocketRequestForm},
+
+    props: {
+      scenario: Scenario,
+      request: Request,
+      isReadOnly: {
+        type: Boolean,
+        default: false
+      },
+      debugReportId: String
     },
-    debugReportId: String
-  },
     data() {
       return {
         reportId: "",
@@ -44,6 +47,9 @@ export default {
             break;
           case RequestFactory.TYPES.SQL:
             name = "MsApiSqlRequestForm";
+            break;
+          case RequestFactory.TYPES.WEBSOCKET:
+            name="MsApiWebsocketRequestForm";
             break;
           default:
             name = "MsApiHttpRequestForm";

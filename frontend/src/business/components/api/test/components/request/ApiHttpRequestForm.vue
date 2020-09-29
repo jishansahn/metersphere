@@ -70,6 +70,12 @@
       <el-tab-pane :label="$t('api_test.request.extract.label')" name="extract">
         <ms-api-extract :is-read-only="isReadOnly" :extract="request.extract"/>
       </el-tab-pane>
+      <el-tab-pane :label="$t('api_test.request.processor.pre_jdbc_script')" name="jdbcPreProcessor">
+        <ms-jdbc-processor :is-read-only="isReadOnly" :jdbc-processor="request.jdbcPreProcessor" :scenario="scenario" :useEnvironment="request.useEnvironment"/>
+      </el-tab-pane>
+      <el-tab-pane :label="$t('api_test.request.processor.post_jdbc_script')" name="jdbcPostProcessor">
+        <ms-jdbc-processor :is-read-only="isReadOnly" :jdbc-processor="request.jdbcPostProcessor" :scenario="scenario" :useEnvironment="request.useEnvironment"/>
+      </el-tab-pane>
       <el-tab-pane :label="$t('api_test.request.processor.pre_exec_script')" name="jsr223PreProcessor">
         <ms-jsr233-processor :is-read-only="isReadOnly" :jsr223-processor="request.jsr223PreProcessor"/>
       </el-tab-pane>
@@ -94,13 +100,14 @@ import {REQUEST_HEADERS} from "@/common/js/constants";
 import MsApiVariable from "@/business/components/api/test/components/ApiVariable";
 import MsJsr233Processor from "../processor/Jsr233Processor";
 import MsApiAdvancedConfig from "../ApiAdvancedConfig";
+import MsJdbcProcessor from "@/business/components/api/test/components/processor/JdbcProcessor";
 
 export default {
   name: "MsApiHttpRequestForm",
   components: {
     MsJsr233Processor,
     MsApiAdvancedConfig,
-    MsApiVariable, ApiRequestMethodSelect, MsApiExtract, MsApiAssertions, MsApiBody, MsApiKeyValue},
+    MsApiVariable, ApiRequestMethodSelect, MsApiExtract, MsApiAssertions, MsApiBody, MsApiKeyValue,MsJdbcProcessor},
   props: {
     request: HttpRequest,
     scenario: Scenario,

@@ -7,6 +7,8 @@ import i18n from "../i18n/i18n";
 
 Vue.config.productionTip = false;
 
+//开启debug模式
+Vue.config.debug = true;
 Vue.use(ElementUI, {
   i18n: (key, value) => i18n.t(key, value)
 });

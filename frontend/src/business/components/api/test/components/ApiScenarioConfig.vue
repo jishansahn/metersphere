@@ -17,7 +17,7 @@
                     {{ $t('api_test.scenario.config') }}
                   </span>
                 </div>
-                <el-dropdown trigger="click" @command="handleCommand">
+                <el-dropdown trigger="click" @command="handleCommand"><!--右边...展开：复制删除等-->
                   <span class="el-dropdown-link el-icon-more scenario-btn"/>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item :disabled="isReadOnly" :command="{type: 'copy', index: index}">
@@ -42,7 +42,7 @@
           </draggable>
         </ms-api-collapse>
       </div>
-      <el-popover placement="top" v-model="visible">
+      <el-popover placement="top" v-model="visible"><!--场景增加-->
         <el-radio-group v-model="type" @change="createScenario">
           <el-radio :label="types.CREATE">{{ $t('api_test.scenario.create_scenario') }}</el-radio>
           <el-radio :label="types.SELECT">{{ $t('api_test.scenario.select_scenario') }}</el-radio>

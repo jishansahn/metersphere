@@ -11,6 +11,8 @@ public class ApiImportParserFactory {
             return new PostmanParser();
         } else if (StringUtils.equals(ApiImportPlatform.Swagger2.name(), platform)) {
             return new Swagger2Parser();
+        }else if(StringUtils.equals(ApiImportPlatform.JMX.name(), platform)){
+            return new JmeterParser();
         }
         return null;
     }
