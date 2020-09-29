@@ -488,6 +488,98 @@ export class DubboRequest extends Request {
     return new DubboRequest(this);
   }
 }
+export class WebsocketRequest extends Request{
+  static PROTOCOLS = {
+    WSS: "wss://",
+    WS: "ws://"
+  }
+  constructor(options={}) {
+    super(RequestFactory.TYPES.WEBSOCKET);
+    this.mode=options.mode;
+    this.id = options.id || uuid();
+    this.name=options.name;
+    this.enable = options.enable === undefined ? true : options.enable;
+    this.useEnvironment = false;
+    console.log(this.mode);
+    if(this.mode===0){
+      this.setClose(options);
+    }else if(this.mode===2){
+      this.setRequest(options);
+    }else{
+      this.setConnection(options);
+    }
+    this.assertions = new Assertions(options.assertions);
+    this.extract = new Extract(options.extract);
+    this.jsr223PreProcessor = new JSR223Processor(options.jsr223PreProcessor);
+    this.jsr223PostProcessor = new JSR223Processor(options.jsr223PostProcessor);
+    this.jdbcPostProcessor=new JdbcProcessor(options.jdbcPostProcessor);
+    this.jdbcPreProcessor=new JdbcProcessor(options.jdbcPreProcessor);
+    // this.set(options);
+    // this.sets({ headers: KeyValue}, options);
+    this.sets({args: KeyValue, attachmentArgs: KeyValue}, options);
+
+  }
+  setConnection(options={}){
+    this.protocol = options.protocol || WebsocketRequest.PROTOCOLS.WSS;
+    this.TLS=(this.protocol=== WebsocketRequest.PROTOCOLS.WSS?true:false);
+    this.server=options.server||"ta_test.thinkingdata.cn";
+    this.port=(this.protocol=== WebsocketRequest.PROTOCOLS.WSS?443:80);
+    // this.url = "wss://ta_test.thinkingdata.cn/websocket/query";
+    this.path = "/websocket/query";
+    this.connectTimeout=options.connectTimeout || 20000;
+
+  }
+  setClose(options={}){
+    this.statusCode=options.statusCode||1000;
+    this.readTimeout=options.readTimeout || 6000;
+  }
+  setRequest(options={}){
+    this.createNewConnection=options.createNewConnection;
+    // this.headers = [];
+    this.protocol = options.protocol || WebsocketRequest.PROTOCOLS.WSS;
+    this.TLS=(this.protocol=== WebsocketRequest.PROTOCOLS.WSS?true:false);
+    this.server=options.server||"ta_test.thinkingdata.cn";
+    this.port=(this.protocol=== WebsocketRequest.PROTOCOLS.WSS?443:80);
+    // this.url = "wss://ta_test.thinkingdata.cn/websocket/query";
+    this.path = "/websocket/query";
+    this.connectTimeout=options.connectTimeout || 20000;
+    this.binaryPayload=false;
+    this.requestData=options.requestData;
+    this.readTimeout=options.readTimeout || 6000;
+    this.loadDataFromFile=false;
+    this.dataFile=undefined;
+    // this.environment = undefined;
+
+
+  }
+  // initOptions(options) {
+  //   this.createNewConnection=true;
+  //   this.TLS=true;
+  //   this.connectTimeout=20000;
+  //   this.readTimeout=6000;
+  //   this.loadDataFromFile=false;
+  //   this.binaryPayload=false;
+  //   this.useEnvironment = false;
+  //   // options.assertions = new Assertions(options.assertions);
+  //   return options;
+  // }
+  isValid() {
+    return {
+      isValid: true
+    }
+  }
+  showType() {
+    return this.type;
+  }
+
+  showProtocol() {
+    return this.protocol.toUpperCase();
+  }
+  clone() {
+    return new WebsocketRequest(this);
+  }
+}
+
 
 export class WebsocketRequest extends Request {
   static PROTOCOLS = {
@@ -1109,6 +1201,7 @@ class JMXHttpRequest {
   }
 }
 
+
 class JMXWebsocketRequest {
   constructor(request, environment) {
     // this.enable=request.enable;
@@ -1221,6 +1314,7 @@ class JMXGenerator {
             } else if (request instanceof SqlRequest) {
               request.dataSource = scenario.databaseConfigMap.get(request.dataSource);
               sampler = new JDBCSampler(request.name || "", request);
+
             } else if (request instanceof WebsocketRequest) {
               console.log("ssssss---");
               // sampler=new RequestResponseWebSocketSampler(request.name||"",new JMXWebsocketRequest(request, scenario.environment));
@@ -1241,6 +1335,7 @@ class JMXGenerator {
             this.addRequestAssertion(sampler, request);
 
             this.addJSR223PreProcessor(sampler, request);
+
             let databaseConfigMap = scenario.databaseConfigMap;
             console.log(databaseConfigMap);
             this.addJdbcProcessor(sampler, request, databaseConfigMap);
@@ -1372,6 +1467,7 @@ class JMXGenerator {
     }
   }
 
+
   addJdbcProcessor(sampler, request, databaseConfigMap) {
     let name = request.name;
     if (request.jdbcPreProcessor && request.jdbcPreProcessor.query) {
@@ -1381,6 +1477,7 @@ class JMXGenerator {
       sampler.put(new JDBCPostProcessor(name, request.jdbcPostProcessor, databaseConfigMap));
     }
   }
+
 
   addConstantsTimer(sampler, request) {
     if (request.timer && request.timer.isValid() && request.timer.enable) {

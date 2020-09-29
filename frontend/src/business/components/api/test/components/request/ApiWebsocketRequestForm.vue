@@ -2,7 +2,7 @@
   <el-form :model="request" :rules="rules" ref="request" label-width="100px">
     <el-form-item :label="$t('api_test.request.websocket.mode')" prop="mode">
       <el-radio-group v-model="request.mode" :label="$t('api_test.request.websocket.mode')" prop="mode">
-        <el-radio :label="item.value" :key="item.value" v-for="item in requestMode">{{item.label}}</el-radio>
+        <el-radio :label="item.value" :key="item.value" v-for="item in requestMode">{{ item.label }}</el-radio>
       </el-radio-group>
     </el-form-item>
 
@@ -11,20 +11,23 @@
     </el-form-item>
 
     <el-form-item :label="$t('api_test.request.websocket.statusCode')" v-if="(request.mode===0)">
-      <el-input type="number" v-model="request.statusCode" />
+      <el-input type="number" v-model="request.statusCode"/>
     </el-form-item>
 
     <el-form-item v-if="(request.mode===0)" :label="$t('api_test.request.websocket.read_timeout')" prop="readTimeout">
-      <el-input-number :disabled="isReadOnly" size="mini" v-model="request.readTimeout" :placeholder="$t('commons.millisecond')" :max="1000*10000000" :min="0"/>
+      <el-input-number :disabled="isReadOnly" size="mini" v-model="request.readTimeout"
+                       :placeholder="$t('commons.millisecond')" :max="1000*10000000" :min="0"/>
     </el-form-item>
 
-    <el-form-item v-if="request.mode===2" label="创建新连接" >
-      <el-radio-group v-model="request.createNewConnection" >
-        <el-radio :label="item.value" :key="item.value" v-for="item in isCreateNewConnection">{{item.label}}</el-radio>
+    <el-form-item v-if="request.mode===2" label="创建新连接">
+      <el-radio-group v-model="request.createNewConnection">
+        <el-radio :label="item.value" :key="item.value" v-for="item in isCreateNewConnection">{{ item.label }}
+        </el-radio>
       </el-radio-group>
     </el-form-item>
 
-    <el-form-item v-if="(request.mode===2 && request.createNewConnection) || (request.mode===1)" label="Connection" name="connection">
+    <el-form-item v-if="(request.mode===2 && request.createNewConnection) || (request.mode===1)" label="Connection"
+                  name="connection">
       <el-form-item :label="$t('api_test.request.websocket.protocol')" prop="protocol">
         <el-select v-model="request.protocol">
           <el-option label="wss://" :value="protocols.WSS"/>
@@ -42,7 +45,8 @@
         </el-input>
       </el-form-item>
       <el-form-item :label="$t('api_test.request.websocket.connection_timeout')" prop="connectionTimeout">
-        <el-input-number :disabled="isReadOnly" size="mini" v-model="request.connectTimeout" :placeholder="$t('commons.millisecond')" :max="1000*10000000" :min="0"/>
+        <el-input-number :disabled="isReadOnly" size="mini" v-model="request.connectTimeout"
+                         :placeholder="$t('commons.millisecond')" :max="1000*10000000" :min="0"/>
       </el-form-item>
     </el-form-item>
     <el-form-item>
@@ -52,15 +56,19 @@
       </el-switch>
     </el-form-item>
 
-    <el-button :disabled="!request.enable || !scenario.enable || isReadOnly" class="debug-button" size="small" type="primary" @click="runDebug">{{$t('api_test.request.debug')}}</el-button>
+    <el-button :disabled="!request.enable || !scenario.enable || isReadOnly" class="debug-button" size="small"
+               type="primary" @click="runDebug">{{ $t('api_test.request.debug') }}
+    </el-button>
     <el-tabs v-if="request.mode===2" v-model="activeName">
-      <el-tab-pane :label="$t('api_test.request.body')" name="body" >
+      <el-tab-pane :label="$t('api_test.request.body')" name="body">
+
         <el-input :rows="12"
                   type="textarea"
                   v-model="request.requestData" @blur="bodyBlur"></el-input>
 
         <el-form-item :label="$t('api_test.request.websocket.read_timeout')" prop="readTimeout">
-          <el-input-number :disabled="isReadOnly" size="mini" v-model="request.readTimeout" :placeholder="$t('commons.millisecond')" :max="1000*10000000" :min="0"/>
+          <el-input-number :disabled="isReadOnly" size="mini" v-model="request.readTimeout"
+                           :placeholder="$t('commons.millisecond')" :max="1000*10000000" :min="0"/>
         </el-form-item>
       </el-tab-pane>
       <el-tab-pane :label="$t('api_test.request.assertions.label')" name="assertions">
@@ -69,12 +77,16 @@
       <el-tab-pane :label="$t('api_test.request.extract.label')" name="extract">
         <ms-api-extract :is-read-only="isReadOnly" :extract="request.extract"/>
       </el-tab-pane>
+
       <el-tab-pane :label="$t('api_test.request.processor.pre_jdbc_script')" name="jdbcPreProcessor">
-        <ms-jdbc-processor :is-read-only="isReadOnly" :jdbc-processor="request.jdbcPreProcessor" :scenario="scenario" :useEnvironment="request.useEnvironment"/>
+        <ms-jdbc-processor :is-read-only="isReadOnly" :jdbc-processor="request.jdbcPreProcessor" :scenario="scenario"
+                           :useEnvironment="request.useEnvironment"/>
       </el-tab-pane>
       <el-tab-pane :label="$t('api_test.request.processor.post_jdbc_script')" name="jdbcPostProcessor">
-        <ms-jdbc-processor :is-read-only="isReadOnly" :jdbc-processor="request.jdbcPostProcessor" :scenario="scenario" :useEnvironment="request.useEnvironment"/>
+        <ms-jdbc-processor :is-read-only="isReadOnly" :jdbc-processor="request.jdbcPostProcessor" :scenario="scenario"
+                           :useEnvironment="request.useEnvironment"/>
       </el-tab-pane>
+
       <el-tab-pane :label="$t('api_test.request.processor.pre_exec_script')" name="beanShellPreProcessor">
         <ms-jsr233-processor :is-read-only="isReadOnly" :jsr223-processor="request.jsr223PreProcessor"/>
       </el-tab-pane>
@@ -103,20 +115,34 @@ import {REQUEST_HEADERS} from "@/common/js/constants";
 import {convert} from "@/business/components/api/test/model/DataProc";
 import MsJsr233Processor from "@/business/components/api/test/components/processor/Jsr233Processor";
 import MsJdbcProcessor from "@/business/components/api/test/components/processor/JdbcProcessor";
+
 import MsCodeEdit from "@/business/components/common/components/MsCodeEdit";
+
 
 export default {
   name: "MsApiWebsocketRequestForm",
   components: {
-    MsApiVariable, MsApiAssertions, ApiRequestMethodSelect,MsApiKeyValue,MsApiExtract,MsJsr233Processor,MsJdbcProcessor,MsCodeEdit},
+    MsApiVariable,
+    MsApiAssertions,
+    ApiRequestMethodSelect,
+    MsApiKeyValue,
+    MsApiExtract,
+    MsJsr233Processor,
+    MsJdbcProcessor,
+    MsCodeEdit
+  },
+
   props: {
     request: WebsocketRequest,
     scenario: Scenario,
-    isReadOnly: {
-      type: Boolean,
-      default: false
-    },
+    isReadOnly:
+      {
+        type: Boolean,
+        default:
+          false
+      }
   },
+
   data() {
     return {
       activeName: "body",
@@ -130,49 +156,50 @@ export default {
         ]
       },
       isCreateNewConnection: [
-        { label: "是", value: true },
-        { label: "否", value: false }
+        {label: "是", value: true},
+        {label: "否", value: false}
       ],
       requestMode: [
-        { label: "只连接", value: 1 },
-        { label: "request-response", value: 2 },
-        { label: "关闭连接", value: 0 }
+        {label: "只连接", value: 1},
+        {label: "request-response", value: 2},
+        {label: "关闭连接", value: 0}
       ]
       // headerSuggestions: REQUEST_HEADERS
     }
-  },
+  }
+  ,
   methods: {
-    bodyBlur(){
+    bodyBlur() {
       console.log("onblur");
-      let obj=JSON.parse(this.request.requestData);
+      let obj = JSON.parse(this.request.requestData);
       convert(obj);
-      this.request.requestData=JSON.stringify(obj);
+      this.request.requestData = JSON.stringify(obj);
       console.log(this.request.requestData);
     },
-
     urlChange() {
       if (!this.request.url) return;
       let url = this.getURL(this.addProtocol(this.request.url));
       if (url) {
         this.request.url = decodeURIComponent(url.origin + url.pathname);
       }
-    },
+    }
+    ,
     pathChange() {
       if (!this.request.path) return;
       let url = this.getURL(this.displayUrl);
       let urlStr = url.origin + url.pathname;
       let envUrl = 'wss://' + this.request.environment.socket;
       this.request.path = decodeURIComponent(urlStr.substring(envUrl.length, urlStr.length));
-    },
+    }
+    ,
     useEnvironmentChange(value) {
       if (value && !this.request.environment) {
         this.$error(this.$t('api_test.request.please_add_environment_to_scenario'), 2000);
         this.request.useEnvironment = false;
       }
       this.$refs["request"].clearValidate();
-    },
-
-
+    }
+    ,
     addProtocol(url) {
       if (url) {
         if (!url.toLowerCase().startsWith("wss") && !url.toLowerCase().startsWith("ws")) {
@@ -180,11 +207,13 @@ export default {
         }
       }
       return url;
-    },
+    }
+    ,
     runDebug() {
       this.$emit('runDebug');
     }
-  },
+  }
+  ,
   computed: {
     // displayUrl() {
     //   return this.request.environment ?  + 'wss://' + this.request.environment.socket + (this.request.path ? this.request.path : '') : '';
@@ -216,8 +245,10 @@ export default {
 .environment-url-tip {
   color: #F56C6C;
 }
+
 .script-content {
   height: calc(100vh - 570px);
 }
+
 
 </style>

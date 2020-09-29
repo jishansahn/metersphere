@@ -1,5 +1,6 @@
 import {WebsocketRequest} from "@/business/components/api/test/model/ScenarioModel";
 import JdbcProcessor from "@/business/components/api/test/components/processor/JdbcProcessor";
+
 import dataColor from "echarts/src/visual/dataColor";
 
 const INDENT = '  '; // 缩进2空格
@@ -324,49 +325,52 @@ export class HTTPSamplerProxy extends DefaultTestElement {
   }
 }
 
-export class WebsocketCloseSampler extends DefaultTestElement{
-  constructor(testName,options={}) {
+export class WebsocketCloseSampler extends DefaultTestElement {
+  constructor(testName, options = {}) {
     super("eu.luminis.jmeter.wssampler.CloseWebSocketSampler",
       "eu.luminis.jmeter.wssampler.CloseWebSocketSamplerGui",
       "eu.luminis.jmeter.wssampler.CloseWebSocketSampler",
       testName);
-    this.stringProp("statusCode",options.statusCode);
-    this.stringProp("readTimeout",options.readTimeout);
+    this.stringProp("statusCode", options.statusCode);
+    this.stringProp("readTimeout", options.readTimeout);
   }
 }
-export class RequestResponseWebSocketSampler extends DefaultTestElement{
-  constructor(testName,options={}) {
+
+export class RequestResponseWebSocketSampler extends DefaultTestElement {
+  constructor(testName, options = {}) {
     super("eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler",
       "eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerGui",
       "eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler",
       testName);
-    this.boolProp("createNewConnection",options.createNewConnection);
-    this.boolProp("TLS",options.TLS);
-    this.stringProp("server",options.server);
-    this.stringProp("port",options.port);
-    this.stringProp('path',options.path);
-    this.stringProp("connectTimeout",options.connectTimeout);
-    this.boolProp("binaryPayload",options.binaryPayload);
-    this.stringProp("requestData",options.requestData);
-    this.stringProp("readTimeout",options.readTimeout);
-    this.boolProp("loadDataFromFile",options.loadDataFromFile);
-    this.stringProp("dataFile",options.dataFile)
+    this.boolProp("createNewConnection", options.createNewConnection);
+    this.boolProp("TLS", options.TLS);
+    this.stringProp("server", options.server);
+    this.stringProp("port", options.port);
+    this.stringProp('path', options.path);
+    this.stringProp("connectTimeout", options.connectTimeout);
+    this.boolProp("binaryPayload", options.binaryPayload);
+    this.stringProp("requestData", options.requestData);
+    this.stringProp("readTimeout", options.readTimeout);
+    this.boolProp("loadDataFromFile", options.loadDataFromFile);
+    this.stringProp("dataFile", options.dataFile)
   }
 }
-export class WebSocketConnectionSampler extends DefaultTestElement{
-  constructor(testName,options={}) {
+
+export class WebSocketConnectionSampler extends DefaultTestElement {
+  constructor(testName, options = {}) {
     super("eu.luminis.jmeter.wssampler.OpenWebSocketSampler",
       "eu.luminis.jmeter.wssampler.OpenWebSocketSamplerGui",
       "eu.luminis.jmeter.wssampler.OpenWebSocketSampler",
       testName);
-    this.boolProp("TLS",options.TLS);
-    this.stringProp("server",options.server);
-    this.stringProp("port",options.port);
-    this.stringProp('path',options.path);
-    this.stringProp("connectTimeout",options.connectTimeout);
+    this.boolProp("TLS", options.TLS);
+    this.stringProp("server", options.server);
+    this.stringProp("port", options.port);
+    this.stringProp('path', options.path);
+    this.stringProp("connectTimeout", options.connectTimeout);
   }
 
 }
+
 // 这是一个Element
 export class HTTPSamplerArguments extends Element {
   constructor(args) {
@@ -382,7 +386,7 @@ export class HTTPSamplerArguments extends Element {
 
     let collectionProp = this.collectionProp('Arguments.arguments');
     this.args.forEach(arg => {
-      if (arg.enable === true  || arg.enable === undefined) { // 非禁用的条件加入执行
+      if (arg.enable === true || arg.enable === undefined) { // 非禁用的条件加入执行
         let elementProp = collectionProp.elementProp(arg.name, 'HTTPArgument');
         elementProp.boolProp('HTTPArgument.always_encode', arg.encode, true);
         elementProp.boolProp('HTTPArgument.use_equals', arg.equals, true);
@@ -532,12 +536,13 @@ export class JSR223PostProcessor extends JSR223Processor {
     super('JSR223PostProcessor', 'TestBeanGUI', 'JSR223PostProcessor', testName, processor)
   }
 }
+
 export class JDBCProcessor extends DefaultTestElement {
-  constructor(tag, guiclass, testclass, testname, processor,databaseConfigMap) {
+  constructor(tag, guiclass, testclass, testname, processor, databaseConfigMap) {
     super(tag, guiclass, testclass, testname);
     this.processor = processor || {};
-    this.stringProp('dataSource', databaseConfigMap.get( this.processor.dataSource));
-    this.stringProp('query',this.processor.query);
+    this.stringProp('dataSource', databaseConfigMap.get(this.processor.dataSource));
+    this.stringProp('query', this.processor.query);
     this.stringProp('variableNames', this.processor.variableNames);
     this.stringProp('queryTimeout', this.processor.queryTimeout);
     this.stringProp('resultVariable', this.processor.resultVariable);
@@ -548,16 +553,19 @@ export class JDBCProcessor extends DefaultTestElement {
     this.stringProp("queryType", 'Callable Statement');
   }
 }
+
 export class JDBCPreProcessor extends JDBCProcessor {
-  constructor(testName, processor,databaseConfigMap) {
-    super('JDBCPreProcessor', 'TestBeanGUI', 'JDBCPreProcessor', testName, processor,databaseConfigMap)
+  constructor(testName, processor, databaseConfigMap) {
+    super('JDBCPreProcessor', 'TestBeanGUI', 'JDBCPreProcessor', testName, processor, databaseConfigMap)
   }
 }
+
 export class JDBCPostProcessor extends JDBCProcessor {
-  constructor(testName, processor,databaseConfigMap) {
-    super('JDBCPostProcessor', 'TestBeanGUI', 'JDBCPostProcessor', testName, processor,databaseConfigMap)
+  constructor(testName, processor, databaseConfigMap) {
+    super('JDBCPostProcessor', 'TestBeanGUI', 'JDBCPostProcessor', testName, processor, databaseConfigMap)
   }
 }
+
 export class BeanShellPreProcessor extends BeanShellProcessor {
   constructor(testName, processor) {
     super('BeanShellPreProcessor', 'TestBeanGUI', 'BeanShellPreProcessor', testName, processor)
