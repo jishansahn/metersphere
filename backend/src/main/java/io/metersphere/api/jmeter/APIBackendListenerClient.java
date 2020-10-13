@@ -1,5 +1,6 @@
 package io.metersphere.api.jmeter;
 
+import cn.thinkingdata.tga.javasdk.ThinkingDataAnalytics;
 import io.metersphere.api.service.APIReportService;
 import io.metersphere.api.service.APITestService;
 import io.metersphere.base.domain.ApiTestReport;
@@ -18,6 +19,7 @@ import org.apache.jmeter.visualizers.backend.BackendListenerContext;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -30,6 +32,10 @@ public class APIBackendListenerClient extends AbstractBackendListenerClient impl
     private final static String THREAD_SPLIT = " ";
 
     private final static String ID_SPLIT = "-";
+
+    private final static String SERVER_URI = "http://ta_test.receiver.thinkingdata.cn";
+
+    private final static String APP_ID = "969b3c5d5e754ceb92bb9627cce84f73";
 
     private final List<SampleResult> queue = new ArrayList<>();
 
@@ -105,6 +111,11 @@ public class APIBackendListenerClient extends AbstractBackendListenerClient impl
 
             scenarioResult.addPassAssertions(requestResult.getPassAssertions());
             scenarioResult.addTotalAssertions(requestResult.getTotalAssertions());
+            try {
+                ReportTA(result);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         });
 
         testResult.getScenarios().addAll(scenarios.values());
@@ -133,7 +144,24 @@ public class APIBackendListenerClient extends AbstractBackendListenerClient impl
             e.printStackTrace();
         }
     }
+    //ta数据上传
+    private void ReportTA(SampleResult result) throws URISyntaxException {
 
+        ThinkingDataAnalytics ta = new ThinkingDataAnalytics(new ThinkingDataAnalytics.BatchConsumer(SERVER_URI, APP_ID));
+        String account_id = "202010131649";
+        String distinct_id = "SDIF21dEJWsI232IdSJ232d2332";
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("#time",new Date(result.getTimeStamp()));
+        properties.put("label",result.getSampleLabel());
+        properties.put("elapsed",result.getTime());
+        properties.put("status",result.isSuccessful());
+        try {
+            ta.track(account_id,distinct_id,"ta",properties);
+            ta.flush();
+        }catch (Exception e){
+            System.out.println(e);
+        }
+    }
     private RequestResult getRequestResult(SampleResult result) {
         RequestResult requestResult = new RequestResult();
         requestResult.setName(result.getSampleLabel());
