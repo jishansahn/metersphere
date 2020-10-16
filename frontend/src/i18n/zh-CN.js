@@ -504,6 +504,8 @@ export default {
         contains: "包含",
         not_contains: "不包含",
         equals: "等于",
+        exists:"只存在",
+        not:"取反",
         start_with: "以...开始",
         end_with: "以...结束",
         value: "值",
@@ -519,6 +521,7 @@ export default {
         regex_expression: "Perl型正则表达式",
         json_path_expression: "JSONPath表达式",
         xpath_expression: "XPath表达式",
+        match_no:"match_no",
       },
       processor: {
         pre_exec_script: "预执行脚本",

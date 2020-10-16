@@ -2,6 +2,7 @@ import {WebsocketRequest} from "@/business/components/api/test/model/ScenarioMod
 import JdbcProcessor from "@/business/components/api/test/components/processor/JdbcProcessor";
 
 import dataColor from "echarts/src/visual/dataColor";
+import el from "element-ui/src/locale/lang/el";
 
 const INDENT = '  '; // 缩进2空格
 
@@ -456,13 +457,36 @@ export class JSONPathAssertion extends DefaultTestElement {
   constructor(testName, jsonPath) {
     super('JSONPathAssertion', 'JSONPathAssertionGui', 'JSONPathAssertion', testName);
     this.jsonPath = jsonPath || {};
-
+    let JSONVALIDATION=true;
+    let INVERT=this.jsonPath.invert;
+    let ISREGEX=false;
+    if(this.jsonPath.condition==="EXISTS"){
+      JSONVALIDATION=false;
+    }
+    if(this.jsonPath.condition==="REGEX"){
+      ISREGEX=true;
+    }
     this.stringProp('JSON_PATH', this.jsonPath.expression);
     this.stringProp('EXPECTED_VALUE', this.jsonPath.expect);
-    this.boolProp('JSONVALIDATION', true);
+    this.boolProp('JSONVALIDATION', JSONVALIDATION);
     this.boolProp('EXPECT_NULL', false);
-    this.boolProp('INVERT', false);
-    this.boolProp('ISREGEX', true);
+    this.boolProp('INVERT', INVERT);
+    this.boolProp('ISREGEX', ISREGEX);
+    console.log(INVERT);
+  }
+}
+
+export class JSR223Assertion extends DefaultTestElement {
+  constructor(testName, jsr223) {
+    super('JSR223Assertion', 'TestBeanGUI', 'JSR223Assertion', testName);
+    console.log("hi ----");
+    console.log(jsr223);
+    this.jsr223 = jsr223 || {};
+
+    this.stringProp('script', this.jsr223.script);
+    this.stringProp('scriptLanguage', this.jsr223.language);
+    this.boolProp('cacheKey', true);
+
   }
 }
 
@@ -716,6 +740,8 @@ export class JSONPostProcessor extends DefaultTestElement {
     this.stringProp('JSONPostProcessor.referenceNames', props.name);
     this.stringProp('JSONPostProcessor.jsonPathExprs', props.expression);
     this.stringProp('JSONPostProcessor.match_numbers', props.match);
+    this.stringProp('JSONPostProcessor.defaultValues', props.defaultValues);
+    console.log(props.match);
   }
 }
 

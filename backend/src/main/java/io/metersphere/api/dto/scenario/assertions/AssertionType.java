@@ -7,7 +7,9 @@ public class AssertionType {
     public final static String REGEX = "Regex";
     public final static String DURATION = "Duration";
     public final static String JSON_PATH = "JSONPath";
+    public final static String JSR223 = "Jsr223";
     public final static String TEXT = "Text";
 
     private String type;
+    private Boolean enable;
 }

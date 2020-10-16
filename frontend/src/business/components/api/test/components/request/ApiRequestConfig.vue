@@ -12,9 +12,11 @@
           <div class="request-method">
             {{ request.showMethod() }}
           </div>
-          <div class="request-name">
-            {{ request.name }}
-          </div>
+          <el-tooltip effect="dark" :content="request.name" placement="bottom" :open-delay="800">
+            <div class="request-name">
+              {{ request.name }}
+            </div>
+          </el-tooltip>
           <div class="request-btn">
             <el-dropdown trigger="click" @command="handleCommand">
               <span class="el-dropdown-link el-icon-more"/>

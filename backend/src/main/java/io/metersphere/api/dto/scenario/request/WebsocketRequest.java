@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.annotation.JSONType;
 import io.metersphere.api.dto.scenario.KeyValue;
 import io.metersphere.api.dto.scenario.assertions.Assertions;
+import io.metersphere.api.dto.scenario.controller.IfController;
 import io.metersphere.api.dto.scenario.extract.Extract;
 import io.metersphere.api.dto.scenario.processor.JDBCPreProcessor;
 import io.metersphere.api.dto.scenario.processor.JDBCPostProcessor;
@@ -55,13 +56,17 @@ public class WebsocketRequest implements Request {
     @JSONField(ordinal = 18)
     private Long readTimeout;
     @JSONField(ordinal = 19)
-    private Integer mode;
+    private Integer mode; //1:open  2:request  0:close
     @JSONField(ordinal = 20)
     private Integer statusCode;
     @JSONField(ordinal = 14)
     private JDBCPreProcessor jdbcPreProcessor;
     @JSONField(ordinal = 15)
     private JDBCPostProcessor jdbcPostProcessor;
+    @JSONField(ordinal = 16)
+    private IfController controller;
+    @JSONField(ordinal = 17)
+    private Boolean enable;
 //    private Boolean loadDataFromFile;
 
     //            dataFile

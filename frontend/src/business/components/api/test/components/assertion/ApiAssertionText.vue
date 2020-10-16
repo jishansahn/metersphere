@@ -1,6 +1,9 @@
 <template>
   <div>
     <el-row :gutter="10" type="flex" justify="space-between" align="middle">
+<!--      <el-col class="kv-checkbox">-->
+<!--        <input type="checkbox" :disabled="isReadOnly" v-model="enable" v-if="edit" />-->
+<!--      </el-col>-->
       <el-col class="assertion-select">
         <el-select :disabled="isReadOnly" class="assertion-item" v-model="subject" size="small"
                    :placeholder="$t('api_test.request.assertions.select_subject')">
@@ -20,7 +23,7 @@
         </el-select>
       </el-col>
       <el-col>
-        <el-input :disabled="isReadOnly" v-model="value" maxlength="200" size="small" show-word-limit
+        <el-input :disabled="isReadOnly" v-model="value" maxlength="1000" size="small" show-word-limit
                   :placeholder="$t('api_test.request.assertions.value')"/>
       </el-col>
       <el-col class="assertion-btn">
@@ -50,7 +53,8 @@
         subjects: ASSERTION_REGEX_SUBJECT,
         subject: "",
         condition: "",
-        value: ""
+        value: "",
+        enable:true
       }
     },
 
@@ -87,7 +91,8 @@
         return new Regex({
             subject: this.subject,
             expression: expression,
-            description: description
+            description: description,
+            enable:this.enable
           }
         );
       }

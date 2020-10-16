@@ -1,6 +1,9 @@
 <template>
   <div>
     <el-row :gutter="10" type="flex" justify="space-between" align="middle">
+      <el-col class="kv-checkbox">
+        <input type="checkbox" :disabled="isReadOnly" v-model="duration.enable" v-if="edit" />
+      </el-col>
       <el-col>
         <el-input :disabled="isReadOnly" :value="value" v-bind="$attrs" step="100" size="small" type="number" @change="change" @input="input"
                   :placeholder="$t('api_test.request.assertions.response_in_time')"/>
@@ -53,5 +56,9 @@
   .assertion-btn {
     text-align: center;
     width: 60px;
+  }
+  .kv-checkbox {
+    width: 20px;
+    margin-right: 10px;
   }
 </style>

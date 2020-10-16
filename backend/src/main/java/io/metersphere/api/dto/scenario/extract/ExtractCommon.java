@@ -10,4 +10,6 @@ public class ExtractCommon extends ExtractType {
     private String value; // value: ${variable}
     private String expression;
     private String description;
+    private String match;
+    private String defaultValues;
 }

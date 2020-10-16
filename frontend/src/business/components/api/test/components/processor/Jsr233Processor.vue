@@ -1,13 +1,5 @@
 <template>
   <div >
-    <el-form-item>
-      <el-select></el-select>
-      <el-select></el-select>
-      <el-select></el-select>
-      <el-select></el-select>
-      <el-input></el-input>
-      <el-input></el-input>
-    </el-form-item>
     <el-row>
       <el-col :span="20" class="script-content">
         <ms-code-edit v-if="isCodeEditAlive" :mode="codeEditModeMap[jsr223Processor.language]" :read-only="isReadOnly" :data.sync="jsr223Processor.script" theme="eclipse" :modes="['java','python']" ref="codeEdit"/>

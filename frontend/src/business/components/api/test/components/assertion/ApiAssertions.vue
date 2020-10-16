@@ -8,6 +8,7 @@
             <el-option :label="$t('api_test.request.assertions.text')" :value="options.TEXT"/>
             <el-option :label="$t('api_test.request.assertions.regex')" :value="options.REGEX"/>
             <el-option :label="'JSONPath'" :value="options.JSON_PATH"/>
+            <el-option :label="'JSR223'" :value="options.JSR223"/>
             <el-option :label="$t('api_test.request.assertions.response_time')" :value="options.DURATION"/>
           </el-select>
         </el-col>
@@ -17,6 +18,7 @@
           <ms-api-assertion-json-path :is-read-only="isReadOnly" :list="assertions.jsonPath" v-if="type === options.JSON_PATH" :callback="after"/>
           <ms-api-assertion-duration :is-read-only="isReadOnly" v-model="time" :duration="assertions.duration"
                                      v-if="type === options.DURATION" :callback="after"/>
+          <ms-api-assertion-jsr223  :is-read-only="isReadOnly" :list="assertions.jsr223" v-if="type === options.JSR223" :callback="after"/>
           <el-button v-if="!type" :disabled="true" type="primary" size="small">Add</el-button>
         </el-col>
       </el-row>
@@ -33,11 +35,13 @@
   import {ASSERTION_TYPE, Assertions} from "../../model/ScenarioModel";
   import MsApiAssertionsEdit from "./ApiAssertionsEdit";
   import MsApiAssertionJsonPath from "./ApiAssertionJsonPath";
+  import MsApiAssertionJsr223 from "./ApiAssertionJsr223"
 
   export default {
     name: "MsApiAssertions",
 
     components: {
+      MsApiAssertionJsr223,
       MsApiAssertionJsonPath,
       MsApiAssertionsEdit, MsApiAssertionDuration, MsApiAssertionRegex, MsApiAssertionText},
 

@@ -17,7 +17,14 @@
         <ms-api-assertion-json-path :is-read-only="isReadOnly" :list="assertions.jsonPath" :json-path="jsonPath" :edit="true" :index="index"/>
       </div>
     </div>
-
+    <div class="assertion-item-editing jsr223" v-if="assertions.jsr223.length > 0">
+      <div>
+        {{'JSR223'}}
+      </div>
+      <div class="regex-item" v-for="(jsr223, index) in assertions.jsr223" :key="index">
+        <ms-api-assertion-jsr223 :is-read-only="isReadOnly" :list="assertions.jsr223" :jsr223="jsr223" :edit="true" :index="index"/>
+      </div>
+    </div>
     <div class="assertion-item-editing response-time" v-if="isShow">
       <div>
         {{$t("api_test.request.assertions.response_time")}}
@@ -33,11 +40,12 @@
   import MsApiAssertionDuration from "./ApiAssertionDuration";
   import {Assertions} from "../../model/ScenarioModel";
   import MsApiAssertionJsonPath from "./ApiAssertionJsonPath";
+  import MsApiAssertionJsr223 from "./ApiAssertionJsr223"
 
   export default {
     name: "MsApiAssertionsEdit",
 
-    components: {MsApiAssertionJsonPath, MsApiAssertionDuration, MsApiAssertionRegex},
+    components: {MsApiAssertionJsr223,MsApiAssertionJsonPath, MsApiAssertionDuration, MsApiAssertionRegex},
 
     props: {
       assertions: Assertions,
@@ -66,6 +74,9 @@
     border-left: 2px solid #7B0274;
   }
 
+  .assertion-item-editing.jsr223 {
+    border-left: 2px solid #7B0274;
+  }
   .assertion-item-editing.json_path {
     border-left: 2px solid #44B3D2;
   }

@@ -9,6 +9,8 @@ public class AssertionJsonPath extends AssertionType {
     private String expect;
     private String expression;
     private String description;
+    private Boolean invert;
+    private String condition;
 
     public AssertionJsonPath() {
         setType(AssertionType.JSON_PATH);

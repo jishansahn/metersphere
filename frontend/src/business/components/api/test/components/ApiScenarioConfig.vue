@@ -7,16 +7,20 @@
             <ms-api-collapse-item v-for="(scenario, index) in scenarios" :key="index"
                                   :title="scenario.name" :name="index" :class="{'disable-scenario': !scenario.enable}">
               <template slot="title">
+
                 <div class="scenario-name">
                   <el-tag type="info" size="small" v-if="scenario.isReference()">{{
                       $t('api_test.scenario.reference')
                     }}
                   </el-tag>
-                  {{ scenario.name }}
+                  <el-tooltip effect="dark" :content="scenario.name" placement="bottom" :open-delay="800">
+                    <div>{{ scenario.name }}</div>
+                  </el-tooltip>
                   <span id="hint" v-if="!scenario.name">
-                    {{ $t('api_test.scenario.config') }}
-                  </span>
+                      {{ $t('api_test.scenario.config') }}
+                    </span>
                 </div>
+
                 <el-dropdown trigger="click" @command="handleCommand"><!--右边...展开：复制删除等-->
                   <span class="el-dropdown-link el-icon-more scenario-btn"/>
                   <el-dropdown-menu slot="dropdown">

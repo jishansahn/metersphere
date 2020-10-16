@@ -6,7 +6,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ExtractJSONPath extends ExtractCommon {
+
     public ExtractJSONPath() {
+
         setType(ExtractType.JSON_PATH);
+
     }
 }

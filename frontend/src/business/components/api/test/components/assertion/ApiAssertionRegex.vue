@@ -1,6 +1,9 @@
 <template>
   <div>
     <el-row :gutter="10" type="flex" justify="space-between" align="middle">
+      <el-col class="kv-checkbox">
+        <input type="checkbox" :disabled="isReadOnly" v-model="regex.enable" v-if="edit" />
+      </el-col>
       <el-col class="assertion-select">
         <el-select :disabled="isReadOnly" class="assertion-item" v-model="regex.subject" size="small"
                    :placeholder="$t('api_test.request.assertions.select_subject')">
@@ -94,5 +97,9 @@
   .assertion-btn {
     text-align: center;
     width: 60px;
+  }
+  .kv-checkbox {
+    width: 20px;
+    margin-right: 10px;
   }
 </style>

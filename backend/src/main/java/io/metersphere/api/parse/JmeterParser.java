@@ -2,18 +2,21 @@ package io.metersphere.api.parse;
 
 import io.metersphere.api.dto.ApiTestImportRequest;
 import io.metersphere.api.dto.parse.ApiImport;
+import io.metersphere.api.dto.scenario.Body;
 import io.metersphere.api.dto.scenario.KeyValue;
 import io.metersphere.api.dto.scenario.Scenario;
+import io.metersphere.api.dto.scenario.assertions.AssertionJSR223;
 import io.metersphere.api.dto.scenario.assertions.AssertionJsonPath;
 import io.metersphere.api.dto.scenario.assertions.AssertionRegex;
 import io.metersphere.api.dto.scenario.assertions.Assertions;
 import io.metersphere.api.dto.scenario.controller.IfController;
-import io.metersphere.api.dto.scenario.processor.JSR223PostProcessor;
-import io.metersphere.api.dto.scenario.processor.JSR223PreProcessor;
-import io.metersphere.api.dto.scenario.processor.JSR223Processor;
-import io.metersphere.api.dto.scenario.request.HttpRequest;
-import io.metersphere.api.dto.scenario.request.Request;
-import io.metersphere.api.dto.scenario.request.WebsocketRequest;
+import io.metersphere.api.dto.scenario.extract.Extract;
+import io.metersphere.api.dto.scenario.extract.ExtractJSONPath;
+import io.metersphere.api.dto.scenario.extract.ExtractRegex;
+import io.metersphere.api.dto.scenario.extract.ExtractXPath;
+import io.metersphere.api.dto.scenario.processor.*;
+import io.metersphere.api.dto.scenario.request.*;
+import io.metersphere.api.dto.scenario.timer.ConstantTimer;
 import io.metersphere.commons.utils.LogUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -38,6 +41,8 @@ public class JmeterParser extends ApiImportAbstractParser {
 //    private final static String HTTP_SAMPLER_PROXY = "HTTPSamplerProxy";
 //    private final static String ELEMENT_PROP = "elementProp";
 
+    private final static String DATA_SOURCE = "48e7c8cc-5161-9758-327b-0dbc8e3a9715";
+    private final static String ENV_ID = "0aa4bfbc-462f-4703-aebb-81ed97e7465d";
 
     @Override
     public ApiImport parse(InputStream source, ApiTestImportRequest request) {
@@ -143,7 +148,15 @@ public class JmeterParser extends ApiImportAbstractParser {
         scenario.setHeaders(headers);
         scenario.setRequests(requests);
         scenarios.add(scenario);
+//        "environmentId": "0aa4bfbc-462f-4703-aebb-81ed97e7465d"
+        scenario.setEnvironmentId(ENV_ID);
         parseSamplerHashTree(element, hashTree, scenario);
+        KeyValue falseKv = new KeyValue();
+        falseKv.setEnable(false);
+        headers.add(falseKv);
+        KeyValue falseKv2 = new KeyValue();
+        falseKv2.setEnable(false);
+        variables.add(falseKv2);
     }
 
     private void parseSamplerHashTree(Element element, Element hashTree, Scenario scenario) {
@@ -155,7 +168,6 @@ public class JmeterParser extends ApiImportAbstractParser {
         for (int i = 0; i < tags.size(); i = i + 2) {
             String tagName = tags.get(i).getName();
             Element subHashTree = tags.get(i + 1);
-            KeyValue kv = new KeyValue();
             switch (tagName) {
                 case "Arguments":
 //                        设置所有参数enable
@@ -177,90 +189,262 @@ public class JmeterParser extends ApiImportAbstractParser {
                     break;
                 case "HTTPSamplerProxy":
                     HttpRequest httpRequest = new HttpRequest();
-                    parseHttpRequest(tags.get(i), tags.get(i + 1), httpRequest,element);
+                    parseHttpRequest(tags.get(i), tags.get(i + 1), httpRequest, element);
                     requests.add(httpRequest);
                     break;
                 case "eu.luminis.jmeter.wssampler.OpenWebSocketSampler":
                     WebsocketRequest websocketOpen = new WebsocketRequest();
+                    parseWebsocketRequest(tags.get(i), tags.get(i + 1), websocketOpen, element);
+                    requests.add(websocketOpen);
                     break;
                 case "eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler":
                     WebsocketRequest websocketRequest = new WebsocketRequest();
+                    parseWebsocketRequest(tags.get(i), subHashTree, websocketRequest, element);
+                    requests.add(websocketRequest);
                     break;
                 case "eu.luminis.jmeter.wssampler.CloseWebSocketSampler":
                     WebsocketRequest websocketClose = new WebsocketRequest();
+                    parseWebsocketRequest(tags.get(i), subHashTree, websocketClose, element);
+                    requests.add(websocketClose);
+                    break;
+                case "JDBCSampler":
+                    SqlRequest sqlRequest = new SqlRequest();
+                    parseSqlRequest(tags.get(i), subHashTree, sqlRequest, element);
+                    requests.add(sqlRequest);
                     break;
                 case "GenericController":
                     parseSamplerHashTree(tags.get(i), subHashTree, scenario);
+                    break;
                 case "IfController":
                     parseSamplerHashTree(tags.get(i), subHashTree, scenario);
+                    break;
                 default:
                     System.out.println("未知tag");
                     break;
             }
         }
+
+
     }
 
-    private void parseHeader(Element element, List<KeyValue> headers) {
-        KeyValue kv = new KeyValue();
-        kv.setEnable(Boolean.parseBoolean(element.attributeValue("enabled")));
-        headers.add(kv);
-        parseArguments(element, headers, "Header.name", "Header.value");
-    }
-
-    private void parseHttpRequest(Element element, Element hasTree, HttpRequest httpRequest,Element parent) {
+    private void parseSqlRequest(Element element, Element hashTree, SqlRequest sqlRequest, Element parent) {
         List<Element> tags = element.elements();
+        String tagName = element.getName();
         String testname = element.attributeValue("testname");
         if ("GenericController".equals(parent.getName())) {
-            testname = testname + element.attributeValue("testname");
+            testname = testname + ">" + parent.attributeValue("testname");
         }
-        httpRequest.setName(testname);
-        if("IfController".equals(parent.getName())) {
-            IfController ifController=new IfController();
+        sqlRequest.setName(testname);
+        sqlRequest.setEnable(Boolean.parseBoolean(element.attributeValue("enabled")));
+        sqlRequest.setUseEnvironment(Boolean.TRUE);
+
+        if ("IfController".equals(parent.getName())) {
+            IfController ifController = new IfController();
 //            ${__jexl3(${233}&gt;s)}
 //            ${__groovy(&quot;${status}&quot;==&quot;running&quot;,)}
             ifController.setEnable(Boolean.parseBoolean(parent.attributeValue("enabled")));
-            String condition=parent.element("IfController.condition").getText();
+            String condition = parent.element("IfController.condition").getText();
+            ifController.setVariable("status");
+            ifController.setOperator("==");
+            ifController.setValue(condition);
+            sqlRequest.setController(ifController);
+        }
+//        9458b437-a5d9-a038-7f6c-9066fc483128
+        sqlRequest.setDataSource(DATA_SOURCE);
+        sqlRequest.setQuery(getElementTextByAttribute(tags, "name", "query"));
+        sqlRequest.setVariableNames(getElementTextByAttribute(tags, "name", "variableNames"));
+        sqlRequest.setResultVariable(getElementTextByAttribute(tags, "name", "resultSetHandler"));
+
+        parseProcessHashTree(element, hashTree, sqlRequest);
+    }
+
+    private void parseWebsocketRequest(Element element, Element hashTree, WebsocketRequest websocketRequest, Element parent) {
+        List<Element> tags = element.elements();
+        String tagName = element.getName();
+        String testname = element.attributeValue("testname");
+        if ("GenericController".equals(parent.getName())) {
+            testname = testname + ">" + parent.attributeValue("testname");
+        }
+        websocketRequest.setName(testname);
+        websocketRequest.setEnable(Boolean.parseBoolean(element.attributeValue("enabled")));
+        websocketRequest.setUseEnvironment(Boolean.TRUE);
+        if ("IfController".equals(parent.getName())) {
+            IfController ifController = new IfController();
+//            ${__jexl3(${233}&gt;s)}
+//            ${__groovy(&quot;${status}&quot;==&quot;running&quot;,)}
+            ifController.setEnable(Boolean.parseBoolean(parent.attributeValue("enabled")));
+            String condition = parent.element("IfController.condition").getText();
+            ifController.setVariable("status");
+            ifController.setOperator("==");
+            ifController.setValue(condition);
+            websocketRequest.setController(ifController);
+        }
+        int mode = 0;
+        if (tagName.indexOf("OpenWebSocketSampler") > 0) {
+            mode = 1;
+        } else if (tagName.indexOf("RequestResponseWebSocketSampler") > 0) {
+            mode = 2;
+        } else {
+            mode = 0;
+        }
+        websocketRequest.setMode(mode);
+        if (mode == 1 || mode == 2) {
+            websocketRequest.setServer(getElementTextByAttribute(tags, "name", "server"));
+            websocketRequest.setPath(getElementTextByAttribute(tags, "name", "path"));
+            String protocol = Boolean.parseBoolean(getElementTextByAttribute(tags, "name", "TLS")) ? "wss" : "ws";
+            websocketRequest.setProtocol(protocol);
+            websocketRequest.setConnectTimeout(Long.parseLong(getElementTextByAttribute(tags, "name", "connectTimeout")));
 
         }
-        httpRequest.setMethod(getElementTextByAttribute(tags, "name", "HTTPSampler.method"));
+        if (mode == 2) {
+            websocketRequest.setCreateNewConnection(Boolean.parseBoolean(getElementTextByAttribute(tags, "name", "createNewConnection")));
+            websocketRequest.setRequestData(getElementTextByAttribute(tags, "name", "requestData"));
+        }
+        if (mode == 0) {
+            websocketRequest.setStatusCode(Integer.parseInt(getElementTextByAttribute(tags, "name", "statusCode")));
+        }
+        if (mode == 1 || mode == 2 || mode == 3) {
+            websocketRequest.setReadTimeout(Long.parseLong(getElementTextByAttribute(tags, "name", "readTimeout")));
+        }
+        parseProcessHashTree(element, hashTree, websocketRequest);
+
+    }
+
+
+    private void parseHttpRequest(Element element, Element hashTree, HttpRequest httpRequest, Element parent) {
+        List<Element> tags = element.elements();
+        String testname = element.attributeValue("testname");
+        if ("GenericController".equals(parent.getName())) {
+            testname = testname + ">" + parent.attributeValue("testname");
+        }
+        httpRequest.setName(testname);
+        if ("IfController".equals(parent.getName())) {
+            IfController ifController = new IfController();
+//            ${__jexl3(${233}&gt;s)}
+//            ${__groovy(&quot;${status}&quot;==&quot;running&quot;,)}
+            ifController.setEnable(Boolean.parseBoolean(parent.attributeValue("enabled")));
+            String condition = parent.element("IfController.condition").getText();
+            ifController.setVariable("status");
+            ifController.setOperator("==");
+            ifController.setValue(condition);
+//            String expression="";
+//            if(condition.startsWith("${__")){
+//                int ld=condition.indexOf("(");
+//                int rd=condition.indexOf(",)}");
+//                expression=condition.substring(ld+1,rd-1);
+//            }else{
+//                expression=condition;
+//            }
+//            if(expression.indexOf("==")>0){
+//                ifController.setOperator("==");
+//                ifController.setVariable(expression.substring(0,));
+//            }
+            httpRequest.setController(ifController);
+
+        }
+
+        String method=getElementTextByAttribute(tags, "name", "HTTPSampler.method");
+        httpRequest.setMethod(method);
         httpRequest.setPath(getElementTextByAttribute(tags, "name", "HTTPSampler.path"));
         httpRequest.setEnable(Boolean.parseBoolean(element.attributeValue("enabled")));
-
-
         httpRequest.setUseEnvironment(Boolean.TRUE);
-        List<KeyValue> parameters = new ArrayList<>();
-        Element paramTag = getElementByAttribute(tags, "name", "HTTPsampler.Arguments");
-        if (paramTag != null)
-            parseArguments(paramTag, parameters, "Argument.name", "Argument.value");
-        httpRequest.setParameters(parameters);
+        if(method.equals("GET")){
+            List<KeyValue> parameters = new ArrayList<>();
+            Element paramTag = getElementByAttribute(tags, "name", "HTTPsampler.Arguments");
+            if (paramTag != null)
+                parseArguments(paramTag, parameters, "Argument.name", "Argument.value");
+            httpRequest.setParameters(parameters);
+        }
+        if(method.equals("POST")) {
+            Body body=new Body();
+            List<KeyValue> kvs=new ArrayList<>();
+            body.setKvs(kvs);
+            httpRequest.setBody(body);
+            int i=0;
+            while(i<tags.size()){
+                Element tag=tags.get(i);
+                String tagAttribute=tag.attributeValue("name");
+                if(tagAttribute.equals("HTTPSampler.postBodyRaw")){
+                    i=i+1;
+                    body.setType("Raw");
+                    body.setFormat("Text");
+                    String raw=getElementTextByAttribute(tags.get(i).element("collectionProp").element("elementProp").elements(),
+                            "name","Argument.value");
+                    body.setRaw(raw);
+                }
+                if(tagAttribute.equals("HTTPsampler.Arguments")){
+                    body.setType("KeyValue");
+                    body.setFormat("Text");
+                    Element paramTag = getElementByAttribute(tags, "name", "HTTPsampler.Arguments");
+                    if (paramTag != null)
+                        parseArguments(paramTag, kvs, "Argument.name", "Argument.value");
+                }
+                if(tagAttribute.equals("HTTPsampler.Files")){
+                    KeyValue kv=new KeyValue();
+                    List<BodyFile> files=new ArrayList<>();
+                    List<Element> args=tag.elements("collectionProp");
+                    for(int j=0;j<args.size();j++) {
+                        BodyFile bf = new BodyFile();
+                        bf.setName(getElementTextByAttribute(args.get(i).elements(), "name", "File.paramname"));
+                        files.add(bf);
+                    }
+                    kv.setFiles(files);
+                    kvs.add(kv);
+                }
+                i++;
+            }
+            KeyValue falseKv = new KeyValue();
+            falseKv.setEnable(false);
+            falseKv.setType("text");
+            kvs.add(falseKv);
+        }
 
-        List<Element> subTags = hasTree.elements();
+        parseProcessHashTree(element, hashTree, httpRequest);
+
+    }
+
+    private void parseProcessHashTree(Element element, Element hashTree, Request request) {
+        List<Element> subTags = hashTree.elements();
         Assertions assertions = new Assertions();
         List<AssertionRegex> regex = new ArrayList<>();
         List<AssertionJsonPath> jsonPath = new ArrayList<>();
+        List<AssertionJSR223> jsr223 = new ArrayList<>();
         List<KeyValue> headers = new ArrayList<>();
+        Extract extract=new Extract();
+        List<ExtractRegex> ex_regexs=new ArrayList<>();
+        List<ExtractJSONPath> ex_jsons=new ArrayList<>();
+        List<ExtractXPath> ex_xpaths=new ArrayList<>();
+        ConstantTimer timer=new ConstantTimer();
+
+        JDBCPreProcessor jdbcPreProcessor = new JDBCPreProcessor();
+        JDBCPostProcessor jdbcPostProcessor = new JDBCPostProcessor();
         JSR223PreProcessor jsr223PreProcessor = new JSR223PreProcessor();
         JSR223PostProcessor jsr223PostProcessor = new JSR223PostProcessor();
+
         for (int i = 0; i < subTags.size(); i = i + 2) {
             String tagName = subTags.get(i).getName();
             Element subTag = subTags.get(i);
             switch (tagName) {
-                case "ResponseAssertion":
-                    parseResponseAssertion(subTag, regex);
-                    break;
                 case "HeaderManager":
                     parseHeader(subTag, headers);
                     break;
-//                case "JDBCPreProcessor":
-//                    System.out.println("s");
-//                    break;
-//                case "JDBCPostProcessor":
-//                    System.out.println("ss");
-//                    break;
+                case "ResponseAssertion":
+                    parseResponseAssertion(subTag, regex);
+                    break;
                 case "JSONPathAssertion":
                     parseJsonPathAssertion(subTag, jsonPath);
                     break;
                 case "BeanShellAssertion":
+                    parseJsr223Assertion(subTag, jsr223);
+                    break;
+                case "JSONPostProcessor":
+                    parseJSONPostProcessor(subTag,ex_jsons);
+                    break;
+                case "JDBCPreProcessor":
+                    parseJDBCProcessor(subTag, jdbcPreProcessor);
+                    break;
+                case "JDBCPostProcessor":
+                    parseJDBCProcessor(subTag, jdbcPostProcessor);
                     break;
                 case "BeanShellPreProcessor":
                     parseBeanShellProcessor(subTag, jsr223PreProcessor);
@@ -268,16 +452,72 @@ public class JmeterParser extends ApiImportAbstractParser {
                 case "BeanShellPostProcessor":
                     parseBeanShellProcessor(subTag, jsr223PostProcessor);
                     break;
+                case "ConstantTimer":
+                    parseConstantTimer(subTag,timer);
                 default:
                     System.out.println("未知tag");
                     break;
             }
         }
+        KeyValue falseKv = new KeyValue();
+        falseKv.setEnable(false);
+        headers.add(falseKv);
         assertions.setRegex(regex);
         assertions.setJsonPath(jsonPath);
-        httpRequest.setAssertions(assertions);
-        httpRequest.setJsr223PreProcessor(jsr223PreProcessor);
-        httpRequest.setJsr223PostProcessor(jsr223PostProcessor);
+        assertions.setJsr223(jsr223);
+        extract.setRegex(ex_regexs);
+        extract.setJson(ex_jsons);
+        extract.setXpath(ex_xpaths);
+
+        if (request instanceof HttpRequest) {
+            HttpRequest req = (HttpRequest) request;
+            req.setAssertions(assertions);
+            req.setHeaders(headers);
+            req.setExtract(extract);
+            req.setJdbcPreProcessor(jdbcPreProcessor);
+            req.setJdbcPostProcessor(jdbcPostProcessor);
+            req.setJsr223PreProcessor(jsr223PreProcessor);
+            req.setJsr223PostProcessor(jsr223PostProcessor);
+            req.setTimer(timer);
+        }
+        if (request instanceof WebsocketRequest) {
+            WebsocketRequest req = (WebsocketRequest) request;
+            req.setAssertions(assertions);
+            req.setHeaders(headers);
+            req.setExtract(extract);
+            req.setJdbcPreProcessor(jdbcPreProcessor);
+            req.setJdbcPostProcessor(jdbcPostProcessor);
+            req.setJsr223PreProcessor(jsr223PreProcessor);
+            req.setJsr223PostProcessor(jsr223PostProcessor);
+        }
+        if (request instanceof SqlRequest) {
+            SqlRequest req = (SqlRequest) request;
+            req.setAssertions(assertions);
+            req.setExtract(extract);
+            req.setJsr223PreProcessor(jsr223PreProcessor);
+            req.setJsr223PostProcessor(jsr223PostProcessor);
+        }
+    }
+    private void parseConstantTimer(Element element,ConstantTimer timer){
+        String delay=getElementTextByAttribute(element.elements(),"name","ConstantTimer.delay");
+        timer.setDelay(delay);
+        timer.setEnable(Boolean.parseBoolean(element.attributeValue("enabled")));
+    }
+    private void parseHeader(Element element, List<KeyValue> headers) {
+
+        parseArguments(element, headers, "Header.name", "Header.value");
+
+    }
+    
+
+
+    private void parseJDBCProcessor(Element element, JDBCProcessor jdbcProcessor) {
+        List<Element> tags = element.elements();
+        jdbcProcessor.setDataSource(DATA_SOURCE);
+        jdbcProcessor.setQuery(getElementTextByAttribute(tags, "name", "query"));
+        jdbcProcessor.setVariableNames(getElementTextByAttribute(tags, "name", "variableNames"));
+        jdbcProcessor.setResultVariable(getElementTextByAttribute(tags, "name", "resultSetHandler"));
+        jdbcProcessor.setQueryTimeout(60000);
     }
 
     private void parseBeanShellProcessor(Element element, JSR223Processor jsr223Processor) {
@@ -288,17 +528,64 @@ public class JmeterParser extends ApiImportAbstractParser {
         jsr223Processor.setLanguage("beanshell");
 
     }
+    private void parseJSONPostProcessor(Element element, List<ExtractJSONPath> ex_jsons){
+        List<Element> tags = element.elements();
+        ExtractJSONPath jsonPath=new ExtractJSONPath();
+        String name=getElementTextByAttribute(tags,"name","JSONPostProcessor.referenceNames");
+        String expression=getElementTextByAttribute(tags,"name","JSONPostProcessor.jsonPathExprs");
+        String matchNo=getElementTextByAttribute(tags,"name","JSONPostProcessor.match_numbers");
+        String defaultValues=getElementTextByAttribute(tags,"name","JSONPostProcessor.defaultValues");
+        jsonPath.setExpression(expression);
+        jsonPath.setVariable(name);
+        jsonPath.setMatch(matchNo);
+        jsonPath.setDefaultValues(defaultValues);
+        ex_jsons.add(jsonPath);
+    }
+
+    private void parseJsr223Assertion(Element element, List<AssertionJSR223> jsr223_list) {
+        List<Element> tags = element.elements();
+        String tagName = element.getName();
+        String language = "";
+        String script = "";
+        if ("BeanShellAssertion".equals(tagName)) {
+            language = "beanshell";
+            script = getElementTextByAttribute(tags, "name", "BeanShellAssertion.query");
+        } else {
+            language = getElementTextByAttribute(tags, "name", "scriptLanguage");
+            script = getElementTextByAttribute(tags, "name", "script");
+        }
+        Boolean enable = Boolean.parseBoolean(element.attributeValue("enabled"));
+
+        AssertionJSR223 jsr223 = new AssertionJSR223();
+        jsr223.setLanguage(language);
+        jsr223.setScript(script);
+        jsr223.setEnable(enable);
+        jsr223_list.add(jsr223);
+
+
+    }
 
     private void parseJsonPathAssertion(Element element, List<AssertionJsonPath> jsonPath) {
         List<Element> tags = element.elements();
         AssertionJsonPath json = new AssertionJsonPath();
         String json_path = getElementTextByAttribute(tags, "name", "JSON_PATH");
         String expect_value = getElementTextByAttribute(tags, "name", "EXPECTED_VALUE");
+        Boolean json_validation=Boolean.parseBoolean(getElementTextByAttribute(tags,"name","JSONVALIDATION"));
+        Boolean invert=Boolean.parseBoolean(getElementTextByAttribute(tags,"name","INVERT"));
+        Boolean is_regex=Boolean.parseBoolean(getElementTextByAttribute(tags,"name","ISREGEX"));
+        if(!json_validation){
+            json.setCondition("EXISTS");
+        }else if(is_regex){
+            json.setCondition("REGEX");
+        }else{
+            json.setCondition("EQUALS");
+        }
+        json.setInvert(invert);
+        Boolean enable = Boolean.parseBoolean(element.attributeValue("enabled"));
+        json.setEnable(enable);
         json.setExpression(json_path);
         json.setExpect(expect_value);
-        json.setDescription(json_path + " expect: " + expect_value);
         jsonPath.add(json);
-
     }
 
     private void parseResponseAssertion(Element element, List<AssertionRegex> regex) {
@@ -308,6 +595,7 @@ public class JmeterParser extends ApiImportAbstractParser {
         if (!"2".equals(test_type) && !"16".equals(test_type)) {
             return;
         }
+        Boolean enable = Boolean.parseBoolean(element.attributeValue("enabled"));
         HashMap<String, String> feild_list = new HashMap<String, String>();
         feild_list.put("Assertion.response_data", "Response Data");
         feild_list.put("Assertion.response_code", "Response Code");
@@ -319,6 +607,7 @@ public class JmeterParser extends ApiImportAbstractParser {
             reg.setExpression(expressions);
             reg.setType("Regex");
             reg.setSubject(feild_list.get(test_field));
+            reg.setEnable(enable);
 //            reg.setDescription(feild_list.get(test_field) + "" + expressions);
             regex.add(reg);
         }
@@ -344,6 +633,7 @@ public class JmeterParser extends ApiImportAbstractParser {
      */
     private void parseArguments(Element element, List<KeyValue> variables, String name, String
             value) {
+        Boolean enable = Boolean.parseBoolean(element.attributeValue("enabled"));
         List<Element> tags = element.element("collectionProp").elements("elementProp");
 
         for (int i = 0; i < tags.size(); i = i + 1) {
@@ -351,7 +641,7 @@ public class JmeterParser extends ApiImportAbstractParser {
             Element tag = tags.get(i);
             switch (tagName) {
                 case "elementProp":
-                    addArgument(tag, variables, name, value);
+                    addArgument(tag, variables, name, value, enable);
                     break;
                 default:
                     System.out.println("未知tag");
@@ -360,7 +650,7 @@ public class JmeterParser extends ApiImportAbstractParser {
         }
     }
 
-    private void addArgument(Element tag, List<KeyValue> variables, String name, String val) {
+    private void addArgument(Element tag, List<KeyValue> variables, String name, String val, Boolean enable) {
         List<Element> subtags = tag.elements();
         String key = "";
         String value = "";
@@ -376,12 +666,13 @@ public class JmeterParser extends ApiImportAbstractParser {
             }
         }
         KeyValue kv = new KeyValue(key, value);
-        kv.setEnable(Boolean.TRUE);
+        kv.setEnable(enable);
         kv.setType(type);
         variables.add(kv);
     }
 
     private void parseUserParameters(Element element, Element hasTree, List<KeyValue> variables) {
+        Boolean enable = Boolean.parseBoolean(element.attributeValue("enabled"));
         List<Element> tags = element.elements("collectionProp");
         Element nameTag = getElementByAttribute(tags, "name", "UserParameters.names");
         Element valueTag = getElementByAttribute(tags, "name", "UserParameters.thread_values");
@@ -392,7 +683,7 @@ public class JmeterParser extends ApiImportAbstractParser {
                 String key = keys.get(i).getText();
                 String value = values.get(i).getText();
                 KeyValue kv = new KeyValue(key, value);
-                kv.setEnable(Boolean.TRUE);
+                kv.setEnable(enable);
                 variables.add(kv);
             }
 
@@ -400,7 +691,7 @@ public class JmeterParser extends ApiImportAbstractParser {
     }
 
     private String getElementTextByAttribute(List<Element> list, String key, String value) {
-        String text = "";
+        String text = null;
         for (int i = 0; i < list.size(); i = i + 1) {
             Element ele = list.get(i);
             String v = ele.attributeValue(key);
