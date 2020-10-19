@@ -27,7 +27,7 @@ import {
   ThreadGroup,
   XPath2Extractor,
   IfController as JMXIfController,
-  ConstantTimer as JMXConstantTimer,
+  ConstantTimer as JMXConstantTimer, UserParameters,
 } from "./JMX";
 import Mock from "mockjs";
 import {funcFilters} from "@/common/js/func-filter";
@@ -978,6 +978,12 @@ export class ExtractCommon extends ExtractType {
     this.set(options);
   }
 
+  initOptions(options) {
+    options.match=options.match || "1";
+    return options;
+
+  }
+
   isValid() {
     return !!this.variable && !!this.expression;
   }
@@ -1315,7 +1321,7 @@ class JMXGenerator {
     let args = this.filterKV(scenario.variables);
     if (args.length > 0) {
       let name = scenario.name + " Variables";
-      threadGroup.put(new Arguments(name, args));
+      threadGroup.put(new UserParameters(name, args));
     }
   }
 

@@ -106,7 +106,7 @@ public class JmeterDocumentParser {
             if (nodeNameEquals(element, ELEMENT_PROP) && "HTTPsampler.Arguments".equals(element.getAttribute("name"))) {
                 processArguments(element);
             } else if ("HTTPSampler.path".equals(element.getAttribute("name"))) {
-                processStringProp(element);
+//                processStringProp(element);
             }
         }
     }
@@ -135,7 +135,7 @@ public class JmeterDocumentParser {
                         if (!(stringProp instanceof Element)) {
                             continue;
                         }
-                        processStringProp((Element) stringProp);
+//                        processStringProp((Element) stringProp);
                     }
                 }
             }
@@ -161,7 +161,7 @@ public class JmeterDocumentParser {
                 break;
             case "Argument.value":
                 String textContent = ele.getTextContent();
-                ele.setTextContent(ScriptEngineUtils.calculate(textContent));
+//                ele.setTextContent(ScriptEngineUtils.calculate(textContent));
                 break;
             default:
                 break;

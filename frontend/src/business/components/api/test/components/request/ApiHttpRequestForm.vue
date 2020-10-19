@@ -156,6 +156,7 @@ export default {
       let url = this.getURL(this.displayUrl);
       let urlStr = url.origin + url.pathname;
       let envUrl = this.request.environment.config.httpConfig.protocol + '://' + this.request.environment.config.httpConfig.socket;
+      // this.request.path=urlStr;
       this.request.path = decodeURIComponent(urlStr.substring(envUrl.length, urlStr.length));
     },
     getURL(urlStr) {

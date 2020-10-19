@@ -409,9 +409,9 @@ export class HTTPsamplerFiles extends Element {
     });
 
     this.args = args || {};
-
     let collectionProp = this.collectionProp('HTTPFileArgs.files');
     this.args.forEach(arg => {
+      arg.metadata="application/vnd.ms-excel";
       let elementProp = collectionProp.elementProp(arg.value, 'HTTPFileArg');
       elementProp.stringProp('File.path', arg.value);
       elementProp.stringProp('File.paramname', arg.name);
@@ -690,6 +690,24 @@ export class Arguments extends DefaultTestElement {
         elementProp.stringProp('Argument.value', arg.value);
         elementProp.stringProp('Argument.desc', arg.desc);
         elementProp.stringProp('Argument.metadata', arg.metadata, "=");
+      }
+    });
+  }
+}
+
+export class UserParameters extends DefaultTestElement {
+  constructor(testName, args) {
+    super('UserParameters', 'UserParametersGui', 'UserParameters', testName);
+    this.args = args || [];
+
+    let collectionProp = this.collectionProp('UserParameters.names');
+    let collectionProp_val=this.collectionProp('UserParameters.thread_values');
+    let collectionProp_val1=collectionProp_val.collectionProp("thread_1_val")
+    // let i=0
+    this.args.forEach(arg => {
+      if (arg.enable === true || arg.enable === undefined) { // 非禁用的条件加入执行
+        collectionProp.stringProp(arg.name,arg.name);
+        collectionProp_val1.stringProp(arg.name,arg.value);
       }
     });
   }

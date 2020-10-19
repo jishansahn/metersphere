@@ -93,11 +93,11 @@
       },
       getJSONPath() {
         let jsonPath = new JSONPath(this.jsonPath);
-        jsonPath.description = jsonPath.expression + jsonPath.condition + (jsonPath.expect ? jsonPath.expect : '') + "取反"+jsonPath.invert;
+        // jsonPath.description = jsonPath.expression + jsonPath.condition + (jsonPath.expect ? jsonPath.expect : '') + "取反"+jsonPath.invert;
         return jsonPath;
       },
       setJSONPathDescription() {
-        this.jsonPath.description = this.jsonPath.expression + " expect: " + (this.jsonPath.expect ? this.jsonPath.expect : '');
+        // this.jsonPath.description = this.jsonPath.expression + " expect: " + (this.jsonPath.expect ? this.jsonPath.expect : '');
       }
     }
   }
