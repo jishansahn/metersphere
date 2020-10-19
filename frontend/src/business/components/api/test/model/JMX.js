@@ -1,4 +1,4 @@
-import {WebsocketRequest} from "@/business/components/api/test/model/ScenarioModel";
+import {ASSERTION_REGEX_SUBJECT, WebsocketRequest} from "@/business/components/api/test/model/ScenarioModel";
 import JdbcProcessor from "@/business/components/api/test/components/processor/JdbcProcessor";
 
 import dataColor from "echarts/src/visual/dataColor";
@@ -447,6 +447,33 @@ export class ResponseAssertion extends DefaultTestElement {
     this.intProp('Assertion.test_type', this.assertion.type);
     this.stringProp('Assertion.custom_message', this.assertion.message);
 
+    let collectionProp = this.collectionProp('Asserion.test_strings');
+    let random = Math.floor(Math.random() * 10000);
+    collectionProp.stringProp(random, this.assertion.value);
+  }
+}
+
+export class TextAssertion extends DefaultTestElement {
+  constructor(testName, assertion) {
+    super('ResponseAssertion', 'AssertionGui', 'ResponseAssertion', testName);
+    this.assertion = assertion || {};
+    let field="Assertion.response_data";
+    if(this.assertion.condition=="CONTAINS"){
+      this.intProp('Assertion.test_type', 2);
+    }else if(this.assertion.condition=="EQUALS"){
+      this.intProp('Assertion.test_type', 8);
+    }else if(this.assertion.condition=="SUBSTRING"){
+      this.intProp('Assertion.test_type', 16);
+    }
+    if(this.assertion.subject==ASSERTION_REGEX_SUBJECT.RESPONSE_HEADERS)
+    {
+      field="Assertion.response_headers";
+    }else if(this.assertion.subject==ASSERTION_REGEX_SUBJECT.RESPONSE_CODE){
+      field="Assertion.response_code";
+    }
+    this.stringProp('Assertion.test_field', field);
+    this.boolProp('Assertion.assume_success', false);
+    this.stringProp('Assertion.custom_message', this.assertion.message);
     let collectionProp = this.collectionProp('Asserion.test_strings');
     let random = Math.floor(Math.random() * 10000);
     collectionProp.stringProp(random, this.assertion.value);

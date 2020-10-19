@@ -8,6 +8,14 @@
         <ms-api-assertion-regex :is-read-only="isReadOnly" :list="assertions.regex" :regex="regex" :edit="true" :index="index"/>
       </div>
     </div>
+    <div class="assertion-item-editing text" v-if="assertions.text.length > 0">
+      <div>
+        {{$t("api_test.request.assertions.text")}}
+      </div>
+      <div class="regex-item" v-for="(te, index) in assertions.text" :key="index">
+        <ms-api-assertion-text :is-read-only="isReadOnly" :list="assertions.text" :text="te" :edit="true" :index="index"/>
+      </div>
+    </div>
 
     <div class="assertion-item-editing json_path" v-if="assertions.jsonPath.length > 0">
       <div>
@@ -37,6 +45,7 @@
 
 <script>
   import MsApiAssertionRegex from "./ApiAssertionRegex";
+  import MsApiAssertionText from "./ApiAssertionText";
   import MsApiAssertionDuration from "./ApiAssertionDuration";
   import {Assertions} from "../../model/ScenarioModel";
   import MsApiAssertionJsonPath from "./ApiAssertionJsonPath";
@@ -45,7 +54,7 @@
   export default {
     name: "MsApiAssertionsEdit",
 
-    components: {MsApiAssertionJsr223,MsApiAssertionJsonPath, MsApiAssertionDuration, MsApiAssertionRegex},
+    components: {MsApiAssertionJsr223,MsApiAssertionJsonPath, MsApiAssertionDuration, MsApiAssertionRegex,MsApiAssertionText},
 
     props: {
       assertions: Assertions,
@@ -73,7 +82,9 @@
   .assertion-item-editing.regex {
     border-left: 2px solid #7B0274;
   }
-
+  .assertion-item-editing.text {
+    border-left: 2px solid #7B0274;
+  }
   .assertion-item-editing.jsr223 {
     border-left: 2px solid #7B0274;
   }

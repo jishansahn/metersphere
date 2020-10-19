@@ -5,10 +5,7 @@ import io.metersphere.api.dto.parse.ApiImport;
 import io.metersphere.api.dto.scenario.Body;
 import io.metersphere.api.dto.scenario.KeyValue;
 import io.metersphere.api.dto.scenario.Scenario;
-import io.metersphere.api.dto.scenario.assertions.AssertionJSR223;
-import io.metersphere.api.dto.scenario.assertions.AssertionJsonPath;
-import io.metersphere.api.dto.scenario.assertions.AssertionRegex;
-import io.metersphere.api.dto.scenario.assertions.Assertions;
+import io.metersphere.api.dto.scenario.assertions.*;
 import io.metersphere.api.dto.scenario.controller.IfController;
 import io.metersphere.api.dto.scenario.extract.Extract;
 import io.metersphere.api.dto.scenario.extract.ExtractJSONPath;
@@ -417,7 +414,7 @@ public class JmeterParser extends ApiImportAbstractParser {
     private void parseProcessHashTree(Element element, Element hashTree, Request request) {
         List<Element> subTags = hashTree.elements();
         Assertions assertions = new Assertions();
-        List<AssertionRegex> regex = new ArrayList<>();
+        List<AssertionText> rsp_text = new ArrayList<>();
         List<AssertionJsonPath> jsonPath = new ArrayList<>();
         List<AssertionJSR223> jsr223 = new ArrayList<>();
         List<KeyValue> headers = new ArrayList<>();
@@ -440,7 +437,7 @@ public class JmeterParser extends ApiImportAbstractParser {
                     parseHeader(subTag, headers);
                     break;
                 case "ResponseAssertion":
-                    parseResponseAssertion(subTag, regex);
+                    parseResponseAssertion(subTag, rsp_text);
                     break;
                 case "JSONPathAssertion":
                     parseJsonPathAssertion(subTag, jsonPath);
@@ -476,7 +473,7 @@ public class JmeterParser extends ApiImportAbstractParser {
         KeyValue falseKv = new KeyValue();
         falseKv.setEnable(false);
         headers.add(falseKv);
-        assertions.setRegex(regex);
+        assertions.setText(rsp_text);
         assertions.setJsonPath(jsonPath);
         assertions.setJsr223(jsr223);
         extract.setRegex(ex_regexs);
@@ -615,12 +612,19 @@ public class JmeterParser extends ApiImportAbstractParser {
         jsonPath.add(json);
     }
 
-    private void parseResponseAssertion(Element element, List<AssertionRegex> regex) {
+    private void parseResponseAssertion(Element element, List<AssertionText> regex) {
         List<Element> tags = element.elements();
         String test_field = getElementTextByAttribute(tags, "name", "Assertion.test_field");
         String test_type = getElementTextByAttribute(tags, "name", "Assertion.test_type");
-        if (!"2".equals(test_type) && !"16".equals(test_type)) {
+        String condition="SUBSTRING";
+        if (!"2".equals(test_type) && !"16".equals(test_type) && !"8".equals(test_type)) {
             return;
+        }
+        if("2".equals(test_type)){
+            condition="CONTAINS";
+        }
+        if("8".equals(test_type)){
+            condition="EQUALS";
         }
         Boolean enable = Boolean.parseBoolean(element.attributeValue("enabled"));
         HashMap<String, String> feild_list = new HashMap<String, String>();
@@ -629,10 +633,11 @@ public class JmeterParser extends ApiImportAbstractParser {
         feild_list.put("Assertion.response_headers", "Response Headers");
         List<Element> testStrings = getElementByAttribute(tags, "name", "Asserion.test_strings").elements();
         for (int i = 0; i < testStrings.size(); i++) {
-            AssertionRegex reg = new AssertionRegex();
-            String expressions = ".*".concat(testStrings.get(i).getText()).concat(".*");
-            reg.setExpression(expressions);
-            reg.setType("Regex");
+            AssertionText reg = new AssertionText();
+            reg.setCondition(condition);
+            String expressions = testStrings.get(i).getText();
+            reg.setValue(expressions);
+            reg.setType("Text");
             reg.setSubject(feild_list.get(test_field));
             reg.setEnable(enable);
 //            reg.setDescription(feild_list.get(test_field) + "" + expressions);

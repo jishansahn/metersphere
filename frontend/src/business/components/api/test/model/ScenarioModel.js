@@ -34,7 +34,7 @@ import {funcFilters} from "@/common/js/func-filter";
 import {
   JDBCPostProcessor,
   JDBCPreProcessor,
-  JSR223Assertion,
+  JSR223Assertion, TextAssertion,
   WebsocketCloseSampler
 } from "@/business/components/api/test/model/JMX";
 
@@ -978,7 +978,7 @@ export class ExtractCommon extends ExtractType {
     this.set(options);
   }
 
-  initOptions(options) {
+  initOptions(options={}) {
     options.match=options.match || "1";
     return options;
 
@@ -1530,6 +1530,13 @@ class JMXGenerator {
         }
       })
     }
+    if (assertions.text.length > 0) {
+      assertions.text.filter(this.filter).forEach(item => {
+        if (item.enable) {
+          httpSamplerProxy.put(this.getTextAssertion(item));
+        }
+      })
+    }
     if (assertions.jsr223.length > 0) {
       assertions.jsr223.filter(this.filter).forEach(jsr223 => {
         if (jsr223.enable) {
@@ -1549,7 +1556,10 @@ class JMXGenerator {
     let name = jsonPath.description;
     return new JSONPathAssertion(name, jsonPath);
   }
-
+  getTextAssertion(text) {
+    let name = text.description;
+    return new TextAssertion(name, text);
+  }
   getJSR223Assertion(jsr223) {
     let name = "JSR223 断言";
     let ass = new JSR223Assertion(name, jsr223);
