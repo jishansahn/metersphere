@@ -41,8 +41,10 @@ public class JmeterParser extends ApiImportAbstractParser {
 //    private final static String HTTP_SAMPLER_PROXY = "HTTPSamplerProxy";
 //    private final static String ELEMENT_PROP = "elementProp";
 
-    private final static String DATA_SOURCE = "48e7c8cc-5161-9758-327b-0dbc8e3a9715";
-    private final static String ENV_ID = "0aa4bfbc-462f-4703-aebb-81ed97e7465d";
+//    private final static String DATA_SOURCE = "48e7c8cc-5161-9758-327b-0dbc8e3a9715";
+    private final static String DATA_SOURCE="6c6ff387-99b6-4cc1-5f32-72d6ec2c9520";
+//    private final static String ENV_ID = "0aa4bfbc-462f-4703-aebb-81ed97e7465d";
+    private final static String ENV_ID = "8b154ca6-7c1c-43f3-a1f8-1ea8e15bba45";
 
     @Override
     public ApiImport parse(InputStream source, ApiTestImportRequest request) {
