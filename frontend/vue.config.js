@@ -4,10 +4,10 @@ module.exports = {
     devtool: 'source-map'
   },
   devServer: {
-    port: 8080,
+    port: 8083,
     proxy: {
       ['^(?!/login)']: {
-        target: 'http://localhost:8081',
+        target: 'http://localhost:8088',
         ws: true,
       }
     }
