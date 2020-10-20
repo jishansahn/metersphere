@@ -356,8 +356,14 @@ public class JmeterParser extends ApiImportAbstractParser {
         if (method.equals("GET")) {
             List<KeyValue> parameters = new ArrayList<>();
             Element paramTag = getElementByAttribute(tags, "name", "HTTPsampler.Arguments");
-            if (paramTag != null)
+            if (paramTag != null) {
                 parseArguments(paramTag, parameters, "Argument.name", "Argument.value");
+
+            }
+            KeyValue kv = new KeyValue();
+            kv.setEnable(false);
+            kv.setType("text");
+            parameters.add(kv);
             httpRequest.setParameters(parameters);
         }
         if (method.equals("POST")) {

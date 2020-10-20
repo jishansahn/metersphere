@@ -697,7 +697,7 @@ export class JDBCDataSource extends DefaultTestElement {
     this.stringProp('connectionAge', '5000');
     this.stringProp('trimInterval', '60000');
     this.stringProp('transactionIsolation', 'DEFAULT');
-    this.stringProp('checkQuery');
+    this.stringProp('checkQuery','select 1');
     this.stringProp('initQuery');
     this.stringProp('connectionProperties');
   }

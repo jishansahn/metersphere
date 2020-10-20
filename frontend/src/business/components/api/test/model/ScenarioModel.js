@@ -1487,7 +1487,8 @@ class JMXGenerator {
     if (request.body.isKV()) {
       body = this.filterKV(request.body.kvs);
       this.addRequestBodyFile(httpSamplerProxy, request, testId);
-    } else {
+    } else if(request.body.type===BODY_TYPE.RAW && (request.body.raw)){
+      console.log("raw");
       httpSamplerProxy.boolProp('HTTPSampler.postBodyRaw', true);
       body.push({name: '', value: request.body.raw, encode: false, enable: true});
     }
