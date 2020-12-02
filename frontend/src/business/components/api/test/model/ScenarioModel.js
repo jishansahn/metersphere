@@ -297,7 +297,7 @@ export class RequestFactory {
     HTTP: "HTTP",
     DUBBO: "DUBBO",
     SQL: "SQL",
-    WEBSOCKET: "WEBSOCKET"
+    WEBSOCKET: "WSS"
   }
 
   constructor(options = {}) {
